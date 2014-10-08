@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Flatiron&nbsp;school | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/flatiron-school/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-07T13:40:50-04:00</updated>
+  <updated>2014-10-08T00:05:03-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -12,6 +12,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[cheese.slice]]></title>
+    <link href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/"/>
+    <updated>2014-10-07T22:07:16-04:00</updated>
+    <id>http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice</id>
+    <content type="html"><![CDATA[<p>When learning a programming language as natural as Ruby, the syntax inevitably seeps into our thoughts and alters the way we conceptualize everything from the complex to the mundane. Thus, the title of this blog (and, indeed, this post).</p>
+
+<p>It is easy for this to happen, in part because Ruby has such an extensive library of methods whose names and behaviors make them ideal for modeling real life. One such method is <code>slice</code>.</p>
+
+<p>The method <code>slice</code> can be called on an array (or an object that acts like an array, like a string). It literally returns a &ldquo;slice&rdquo; of the object on which it is called. The original object is left intact.</p>
+
+<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
+&gt; my_slices = cheese.slice(1, 2)
+=&gt; ["muenster", "provolone"] 
+&gt; cheese
+=&gt; ["gouda", "muenster", "provolone", "manchego", "brie"]
+</code></pre>
+
+<p>If you need to take more drastic measures, <code>slice!</code> will modify the original object, removing (and returning) everything you sliced out.</p>
+
+<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
+&gt; my_slices = cheese.slice!(1, 2)
+=&gt; ["muenster", "provolone"] 
+&gt; cheese
+=&gt; ["gouda", "manchego", "brie"]
+</code></pre>
+
+<p>Here are three different ways to use <code>slice</code> (<code>slice!</code> can also be invoked in these ways, and both can be used with arrays and strings):</p>
+
+<ul>
+<li><p><code>array.slice(index)</code> returns the object at <code>array[index]</code>, or <code>nil</code> if there is no object there to return.</p></li>
+<li><p><code>array.slice(start, length)</code> returns a new array containing the elements of <code>array</code> starting at <code>start</code> and continuing for <code>length</code> elements (as shown in the code examples above). If there are no objects there, it returns <code>nil</code>.<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p></li>
+<li><p><code>array.slice(range)</code> returns a new array containing the objects at <code>array[range]</code>, or <code>nil</code>.</p></li>
+</ul>
+
+
+<p>  For more on this and other Ruby Array methods, see the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.</p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>There are some special cases that return an empty array. See the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[My First Post on Octopress]]></title>
