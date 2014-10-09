@@ -12,32 +12,37 @@ Let's say you've been programming for hours and suddenly realize your stomach is
 
 Here is our `restaurants` array:
 
-	restaurants = [
-		{:name => "The Decent Diner", :rating => "average"}, 
-		{:name => "The GoGo Grill", :rating => "delicious"}, 
-		{:name => "Emporium of Mystery Meat", :rating => "poor"},  
-		{:name => "Dig Inn Seasonal Market", :rating => "delicious"}
-	]
-
+```ruby find_delicious_food.rb
+restaurants = [
+	{:name => "The Decent Diner", :rating => "average"}, 
+	{:name => "The GoGo Grill", :rating => "delicious"}, 
+	{:name => "Emporium of Mystery Meat", :rating => "poor"},  
+	{:name => "Dig Inn Seasonal Market", :rating => "delicious"}
+]
+```
 So, we want to get the name of a restaurant whose `:rating` is `"delicious"`. We could do something like this:
 
-	def find_delicious_food(restaurants)
-  	  restaurants.each do |restaurant_info|
-        restaurant_info.values.each do |value|
-          if value == "delicious"
-            return restaurant_info[:name]
-          end
-        end
+```ruby
+def find_delicious_food(restaurants)
+	  restaurants.each do |restaurant_info|
+    restaurant_info.values.each do |value|
+      if value == "delicious"
+        return restaurant_info[:name]
       end
     end
+  end
+end
+```
 
 If we call this method on our `restaurants` hash, it will return the value "The GoGo Grill". Sounds good to me. But in order to get there we needed a `return` inside an `if` statement inside an `each` loop inside another `each` loop. Not pretty.
 
 There is a better way. The `find` method! Behold:
 
-	def find_delicious_food(restaurants)
-      restaurants.find{|restaurant| restaurant[:rating] == "delicious"}[:name]
-	end
+```ruby
+def find_delicious_food(restaurants)
+  restaurants.find{|restaurant| restaurant[:rating] == "delicious"}[:name]
+end
+```
 
 Just one line of code seems to do the same thing as its ugly predecessor. Let's look at it more closely. Here is what `find` does:
 
@@ -49,12 +54,14 @@ As it turns out, this `nil` value could cause some problems for our `find_delici
 
 Here is the method refactored to avoid that error:
 
-	def find_delicious_food(restaurants)
-	  good_restaurant = restaurants.find{|restaurant| restaurant[:rating] == "delicious"}
-	  if good_restaurant
-	    return good_restaurant[:name]
-	  end
-	end
+```ruby
+def find_delicious_food(restaurants)
+  good_restaurant = restaurants.find{|restaurant| restaurant[:rating] == "delicious"}
+  if good_restaurant
+    return good_restaurant[:name]
+  end
+end
+```
 
 Sure, it may not be as cute and little as our one-line method, but it will never break and it's still a lot prettier than loops inside loops. 
 
