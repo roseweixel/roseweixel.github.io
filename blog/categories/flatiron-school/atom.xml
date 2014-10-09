@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Flatiron&nbsp;school | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/flatiron-school/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-08T22:00:17-04:00</updated>
+  <updated>2014-10-08T22:23:48-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -12,122 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Looking for Something? Just #find It!]]></title>
-    <link href="http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it/"/>
-    <updated>2014-10-08T20:32:04-04:00</updated>
-    <id>http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it</id>
-    <content type="html"><![CDATA[<p>Searching through nested data structures can be downright messy. Even saying &ldquo;nested data structures&rdquo; sounds complicated. Luckily, Ruby has some powerful <a href="http://www.ruby-doc.org/core-2.1.3/Enumerable.html">Enumerable methods</a> that can simplify our lives (or at least our code).</p>
-
-<p>Let&rsquo;s say you&rsquo;ve been programming for hours and suddenly realize your stomach is growling at you (why does this happen so often?). Here is how you might search for some delicious food, if you happened to be searching inside an array filled with hashes. Just humor me for the sake of example.</p>
-
-<p>Here is our <code>restaurants</code> array:</p>
-
-<pre><code>restaurants = [
-    {:name =&gt; "The Decent Diner", :rating =&gt; "average"}, 
-    {:name =&gt; "The GoGo Grill", :rating =&gt; "delicious"}, 
-    {:name =&gt; "Emporium of Mystery Meat", :rating =&gt; "poor"},  
-    {:name =&gt; "Dig Inn Seasonal Market", :rating =&gt; "delicious"}
-]
-</code></pre>
-
-<p>So, we want to get the name of a restaurant whose <code>:rating</code> is <code>"delicious"</code>. We could do something like this:</p>
-
-<pre><code>def find_delicious_food(restaurants)
-  restaurants.each do |restaurant_info|
-    restaurant_info.values.each do |value|
-      if value == "delicious"
-        return restaurant_info[:name]
-      end
-    end
-  end
-end
-</code></pre>
-
-<p>If we call this method on our <code>restaurants</code> hash, it will return the value &ldquo;The GoGo Grill&rdquo;. Sounds good to me. But in order to get there we needed a <code>return</code> inside an <code>if</code> statement inside an <code>each</code> loop inside another <code>each</code> loop. Not pretty.</p>
-
-<p>There is a better way. The <code>find</code> method! Behold:</p>
-
-<pre><code>def find_delicious_food(restaurants)
-  restaurants.find{|restaurant| restaurant[:rating] == "delicious"}[:name]
-end
-</code></pre>
-
-<p>Just one line of code seems to do the same thing as its ugly predecessor. Let&rsquo;s look at it more closely. Here is what <code>find</code> does:</p>
-
-<ul>
-<li>It passes each element of the object on which it was called to a block.</li>
-<li>It returns the first element for which the block evaluates to <code>true</code>.</li>
-<li>If none of the elements return true for the given block, it returns <code>nil</code>.</li>
-</ul>
-
-
-<p>As it turns out, this <code>nil</code> value could cause some problems for our <code>find_delicious_food</code> method. If there are no restaurants in the hash with a <code>:rating</code> of <code>"delicious"</code>, our code breaks. We would get an error, because Ruby cannot make any sense out of <code>nil[:name]</code>.</p>
-
-<p>Here is the method refactored to avoid that error:</p>
-
-<pre><code>def find_delicious_food(restaurants)
-  good_restaurant = restaurants.find{|restaurant| restaurant[:rating] == "delicious"}
-  if good_restaurant
-    return good_restaurant[:name]
-  end
-end
-</code></pre>
-
-<p>Sure, it may not be as cute and little as our one-line method, but it will never break and it&rsquo;s still a lot prettier than loops inside loops.</p>
-
-<p>So when you are searching for that <em>one</em> thing you need inside of some nasty nesting, just <code>find</code> it!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[cheese.slice]]></title>
-    <link href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/"/>
-    <updated>2014-10-07T22:07:16-04:00</updated>
-    <id>http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice</id>
-    <content type="html"><![CDATA[<p>When learning a programming language as natural as Ruby, the syntax inevitably seeps into our thoughts and alters the way we conceptualize everything from the complex to the mundane. Thus, the title of this blog (and, indeed, this post).</p>
-
-<p>It is easy for this to happen, in part because Ruby has such an extensive library of methods whose names and behaviors make them ideal for modeling real life. One such method is <code>slice</code>.</p>
-
-<p>The method <code>slice</code> can be called on an array (or an object that acts like an array, like a string). It literally returns a &ldquo;slice&rdquo; of the object on which it is called. The original object is left intact.</p>
-
-<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
-&gt; my_slices = cheese.slice(1, 2)
-=&gt; ["muenster", "provolone"] 
-&gt; cheese
-=&gt; ["gouda", "muenster", "provolone", "manchego", "brie"]
-</code></pre>
-
-<p>If you need to take more drastic measures, <code>slice!</code> will modify the original object, removing (and returning) everything you sliced out.</p>
-
-<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
-&gt; my_slices = cheese.slice!(1, 2)
-=&gt; ["muenster", "provolone"] 
-&gt; cheese
-=&gt; ["gouda", "manchego", "brie"]
-</code></pre>
-
-<p>Here are three different ways to use <code>slice</code> (<code>slice!</code> can also be invoked in these ways, and both can be used with arrays and strings):</p>
-
-<ul>
-<li><p><code>array.slice(index)</code> returns the object at <code>array[index]</code>, or <code>nil</code> if there is no object there to return.</p></li>
-<li><p><code>array.slice(start, length)</code> returns a new array containing the elements of <code>array</code> starting at <code>start</code> and continuing for <code>length</code> elements (as shown in the code examples above). If there are no objects there, it returns <code>nil</code>.<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p></li>
-<li><p><code>array.slice(range)</code> returns a new array containing the objects at <code>array[range]</code>, or <code>nil</code>.</p></li>
-</ul>
-
-
-<p>  For more on this and other Ruby Array methods, see the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.</p>
-<div class="footnotes">
-<hr/>
-<ol>
-<li id="fn:1">
-<p>There are some special cases that return an empty array. See the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
-</ol>
-</div>
-
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[My First Post on Octopress]]></title>
