@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-08T22:23:48-04:00</updated>
+  <updated>2014-10-09T10:24:16-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -24,35 +24,56 @@
 
 <p>Here is our <code>restaurants</code> array:</p>
 
-<pre><code>restaurants = [
-    {:name =&gt; "The Decent Diner", :rating =&gt; "average"}, 
-    {:name =&gt; "The GoGo Grill", :rating =&gt; "delicious"}, 
-    {:name =&gt; "Emporium of Mystery Meat", :rating =&gt; "poor"},  
-    {:name =&gt; "Dig Inn Seasonal Market", :rating =&gt; "delicious"}
-]
-</code></pre>
+<figure class='code'><figcaption><span>find_delicious_food.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">restaurants</span> <span class="o">=</span> <span class="o">[</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;The Decent Diner&quot;</span><span class="p">,</span> <span class="ss">:rating</span> <span class="o">=&gt;</span> <span class="s2">&quot;average&quot;</span><span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;The GoGo Grill&quot;</span><span class="p">,</span> <span class="ss">:rating</span> <span class="o">=&gt;</span> <span class="s2">&quot;delicious&quot;</span><span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Emporium of Mystery Meat&quot;</span><span class="p">,</span> <span class="ss">:rating</span> <span class="o">=&gt;</span> <span class="s2">&quot;poor&quot;</span><span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Dig Inn Seasonal Market&quot;</span><span class="p">,</span> <span class="ss">:rating</span> <span class="o">=&gt;</span> <span class="s2">&quot;delicious&quot;</span><span class="p">}</span>
+</span><span class='line'><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>So, we want to get the name of a restaurant whose <code>:rating</code> is <code>"delicious"</code>. We could do something like this:</p>
 
-<pre><code>def find_delicious_food(restaurants)
-  restaurants.each do |restaurant_info|
-    restaurant_info.values.each do |value|
-      if value == "delicious"
-        return restaurant_info[:name]
-      end
-    end
-  end
-end
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">find_delicious_food</span><span class="p">(</span><span class="n">restaurants</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">restaurants</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">restaurant_info</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">restaurant_info</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
+</span><span class='line'>      <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;delicious&quot;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">restaurant_info</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>If we call this method on our <code>restaurants</code> hash, it will return the value &ldquo;The GoGo Grill&rdquo;. Sounds good to me. But in order to get there we needed a <code>return</code> inside an <code>if</code> statement inside an <code>each</code> loop inside another <code>each</code> loop. Not pretty.</p>
 
 <p>There is a better way. The <code>find</code> method! Behold:</p>
 
-<pre><code>def find_delicious_food(restaurants)
-  restaurants.find{|restaurant| restaurant[:rating] == "delicious"}[:name]
-end
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">find_delicious_food</span><span class="p">(</span><span class="n">restaurants</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">restaurants</span><span class="o">.</span><span class="n">find</span><span class="p">{</span><span class="o">|</span><span class="n">restaurant</span><span class="o">|</span> <span class="n">restaurant</span><span class="o">[</span><span class="ss">:rating</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;delicious&quot;</span><span class="p">}</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>Just one line of code seems to do the same thing as its ugly predecessor. Let&rsquo;s look at it more closely. Here is what <code>find</code> does:</p>
 
@@ -67,13 +88,20 @@ end
 
 <p>Here is the method refactored to avoid that error:</p>
 
-<pre><code>def find_delicious_food(restaurants)
-  good_restaurant = restaurants.find{|restaurant| restaurant[:rating] == "delicious"}
-  if good_restaurant
-    return good_restaurant[:name]
-  end
-end
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">find_delicious_food</span><span class="p">(</span><span class="n">restaurants</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">good_restaurant</span> <span class="o">=</span> <span class="n">restaurants</span><span class="o">.</span><span class="n">find</span><span class="p">{</span><span class="o">|</span><span class="n">restaurant</span><span class="o">|</span> <span class="n">restaurant</span><span class="o">[</span><span class="ss">:rating</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;delicious&quot;</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">good_restaurant</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">good_restaurant</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>Sure, it may not be as cute and little as our one-line method, but it will never break and it&rsquo;s still a lot prettier than loops inside loops.</p>
 

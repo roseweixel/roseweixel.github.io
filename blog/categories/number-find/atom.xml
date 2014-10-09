@@ -4,7 +4,7 @@
   <title><![CDATA[Category: #find | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/number-find/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-08T22:23:48-04:00</updated>
+  <updated>2014-10-09T10:24:16-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -24,7 +24,7 @@
 
 <p>Here is our <code>restaurants</code> array:</p>
 
-<pre><code>restaurants = [
+<pre><code class="ruby find_delicious_food.rb">restaurants = [
     {:name =&gt; "The Decent Diner", :rating =&gt; "average"}, 
     {:name =&gt; "The GoGo Grill", :rating =&gt; "delicious"}, 
     {:name =&gt; "Emporium of Mystery Meat", :rating =&gt; "poor"},  
@@ -34,8 +34,8 @@
 
 <p>So, we want to get the name of a restaurant whose <code>:rating</code> is <code>"delicious"</code>. We could do something like this:</p>
 
-<pre><code>def find_delicious_food(restaurants)
-  restaurants.each do |restaurant_info|
+<pre><code class="ruby">def find_delicious_food(restaurants)
+      restaurants.each do |restaurant_info|
     restaurant_info.values.each do |value|
       if value == "delicious"
         return restaurant_info[:name]
@@ -49,7 +49,7 @@ end
 
 <p>There is a better way. The <code>find</code> method! Behold:</p>
 
-<pre><code>def find_delicious_food(restaurants)
+<pre><code class="ruby">def find_delicious_food(restaurants)
   restaurants.find{|restaurant| restaurant[:rating] == "delicious"}[:name]
 end
 </code></pre>
@@ -67,7 +67,7 @@ end
 
 <p>Here is the method refactored to avoid that error:</p>
 
-<pre><code>def find_delicious_food(restaurants)
+<pre><code class="ruby">def find_delicious_food(restaurants)
   good_restaurant = restaurants.find{|restaurant| restaurant[:rating] == "delicious"}
   if good_restaurant
     return good_restaurant[:name]
