@@ -12,7 +12,7 @@ Let's say you've been programming for hours and suddenly realize your stomach is
 
 Here is our `restaurants` array:
 
-```ruby find_delicious_food.rb
+```ruby
 restaurants = [
 	{:name => "The Decent Diner", :rating => "average"}, 
 	{:name => "The GoGo Grill", :rating => "delicious"}, 

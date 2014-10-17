@@ -63,18 +63,18 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 #   3rd Party Settings    #
 # ----------------------- #
 
-# Github repositories
-github_user:
+Github repositories
+github_user: 
 github_repo_count: 0
-github_show_profile_link: true
+github_show_profile_link: false
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: roseweixel
 twitter_tweet_button: true
 
 # Google +1
-google_plus_one: false
+google_plus_one: true
 google_plus_one_size: medium
 
 # Google Plus Profile
@@ -95,7 +95,7 @@ disqus_short_name:
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-55849903-1
 
 # Facebook Like
-facebook_like: false
+facebook_like: true
