@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Food | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/food/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-09T10:24:16-04:00</updated>
+  <updated>2014-10-16T23:49:33-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -24,7 +24,7 @@
 
 <p>Here is our <code>restaurants</code> array:</p>
 
-<pre><code class="ruby find_delicious_food.rb">restaurants = [
+<pre><code class="ruby">restaurants = [
     {:name =&gt; "The Decent Diner", :rating =&gt; "average"}, 
     {:name =&gt; "The GoGo Grill", :rating =&gt; "delicious"}, 
     {:name =&gt; "Emporium of Mystery Meat", :rating =&gt; "poor"},  
