@@ -19,7 +19,7 @@ The method `slice` can be called on an array (or an object that acts like an arr
 	=> ["gouda", "muenster", "provolone", "manchego", "brie"]
 
 If you need to take more drastic measures, `slice!` will modify the original object, removing (and returning) everything you sliced out.
-
+	
 	> cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
 	> my_slices = cheese.slice!(1, 2)
 	=> ["muenster", "provolone"] 
