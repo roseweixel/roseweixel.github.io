@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-23T02:02:12-04:00</updated>
+  <updated>2014-10-23T02:06:27-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -18,11 +18,11 @@
     <link href="http://roseweixel.github.io/blog/2014/10/22/join-tables-for-dr-who/"/>
     <updated>2014-10-22T21:38:48-04:00</updated>
     <id>http://roseweixel.github.io/blog/2014/10/22/join-tables-for-dr-who</id>
-    <content type="html"><![CDATA[<p>Up until a few weeks ago, my entire coding toolbox was comprised pretty much entirely out of a small sampling of some built in Ruby methods. Two of these became blog post topics (<a href="http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it/">#find</a> and <a href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/">#slice</a>), and one&ndash;the <code>&lt;&lt;</code> method&ndash;became the central character of my first coding dream/nightmare, with reserved words <code>while</code> and <code>true</code> playing key supporting roles. I used these methods to write other pretty simple methods.</p>
+    <content type="html"><![CDATA[<p>Up until a few weeks ago, my entire coding toolbox consisted of a small sampling of some built in Ruby methods. Two of these became blog post topics (<a href="http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it/">#find</a> and <a href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/">#slice</a>), and one&ndash;the <code>&lt;&lt;</code> method&ndash;became the central character of my first coding dream/nightmare, with reserved words <code>while</code> and <code>true</code> playing key supporting roles. I used these methods to write other pretty simple methods.</p>
 
 <p>After just a few weeks at <a href="http://www.flatironschool.com">The Flatiron School</a>, I&rsquo;m quickly learning that building up complex programs, like web apps, can&rsquo;t (or maybe really just shouldn&rsquo;t) be accomplished by writing out method after method in one big file. You need the right structures and tools to create complex objects, persist them in a database, and express relationships between these objects. Using ActiveRecord, you get some really simple and powerful tools for all this that hide a huge amount of complexity away, allowing you focus on designing your app to do what you want it to do.</p>
 
-<p>While ActiveRecord makes it easy to create models and associations, some of the concepts involved were hard for me to get my head around at first. One such concept is the join table. I ran up against a problem in need of a join table while working with my classmates on a lab involving modeling characters and actors.</p>
+<p>While ActiveRecord makes it easy to create models and associations, some of the concepts involved were hard for me to get my head around at first. One such concept was the join table. I ran up against a problem in need of a join table while working with my classmates on a lab involving modeling characters and actors.</p>
 
 <p>In ActiveRecord speak, actors have many characters and a character belongs to an actor. Here, in all of its elegant simplicity, is how you&rsquo;d create the models that express this relationship:</p>
 
