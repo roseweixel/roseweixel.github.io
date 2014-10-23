@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Active Record | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/active-record/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-23T02:06:27-04:00</updated>
+  <updated>2014-10-23T02:15:57-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -85,7 +85,7 @@ end
 
 <p><img class="center" src="/images/actors_characters_join.png" width="650" height="650" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
-<p>Now for the migration (assuming your actors table is still in tact and you&rsquo;ve already removed all but the name column from characters):</p>
+<p>Now for the migration (assuming your actors table is still intact and you&rsquo;ve already removed all but the name column from characters):</p>
 
 <pre><code class="ruby 004_create_actors_characters_join_table.rb">class CreateActorsCharactersJoinTable &lt; ActiveRecord::Migration
   def change

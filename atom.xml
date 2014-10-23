@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-10-23T02:06:27-04:00</updated>
+  <updated>2014-10-23T02:15:57-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -114,7 +114,7 @@
 
 <p><img class="center" src="http://roseweixel.github.io/images/actors_characters_join.png" width="650" height="650" title="image" alt="images"></p>
 
-<p>Now for the migration (assuming your actors table is still in tact and you&rsquo;ve already removed all but the name column from characters):</p>
+<p>Now for the migration (assuming your actors table is still intact and you&rsquo;ve already removed all but the name column from characters):</p>
 
 <figure class='code'><figcaption><span>004_create_actors_characters_join_table.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
