@@ -9,7 +9,7 @@
   <meta name="author" content="Rose Weixel">
 
   
-  <meta name="description" content="Up until a few weeks ago, my entire coding toolbox consisted of a small sampling of some built in Ruby methods. Two of these became blog post topics &hellip;">
+  <meta name="description" content="Up until a few weeks ago, my entire coding toolbox consisted of a small sample of some built in Ruby methods. Two of these became blog post topics (# &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -105,7 +105,7 @@
   </header>
 
 
-<div class="entry-content"><p>Up until a few weeks ago, my entire coding toolbox consisted of a small sampling of some built in Ruby methods. Two of these became blog post topics (<a href="http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it/">#find</a> and <a href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/">#slice</a>), and one&ndash;the <code>&lt;&lt;</code> method&ndash;became the central character of my first coding dream/nightmare, with reserved words <code>while</code> and <code>true</code> playing key supporting roles. I used these methods to write other pretty simple methods.</p>
+<div class="entry-content"><p>Up until a few weeks ago, my entire coding toolbox consisted of a small sample of some built in Ruby methods. Two of these became blog post topics (<a href="http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it/">#find</a> and <a href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/">#slice</a>), and one&mdash;the <code>&lt;&lt;</code> method&mdash;became the central character of my first coding dream/nightmare, with reserved words <code>while</code> and <code>true</code> playing key supporting roles. I used these methods to write other pretty simple methods.</p>
 
 <p>After just a few weeks at <a href="http://www.flatironschool.com">The Flatiron School</a>, I&rsquo;m quickly learning that building up complex programs, like web apps, can&rsquo;t (or maybe really just shouldn&rsquo;t) be accomplished by writing out method after method in one big file. You need the right structures and tools to create complex objects, persist them in a database, and express relationships between these objects. Using ActiveRecord, you get some really simple and powerful tools for all this that hide a huge amount of complexity away, allowing you focus on designing your app to do what you want it to do.</p>
 
@@ -175,13 +175,13 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is the basic pattern you&rsquo;d follow to model any <code>has_many</code> <code>belongs_to</code> relationship in ActiveRecord. What seems like &ldquo;magic&rdquo; here is made possible by ActiveRecord Ruby methods that either give our associated classes more methods that let them interact with each other, or wrap SQL statements and hide them away (in the case of migrations). But that is another topic for another post.</p>
+<p>This is the basic pattern you&rsquo;d follow to model any <code>has_many</code> <code>belongs_to</code> relationship in ActiveRecord. What seems like &ldquo;magic&rdquo; here is made possible by ActiveRecord Ruby methods that either give our associated classes more methods that let them interact with each other, or wrap SQL statements and hide them away (in the case of migrations). But that is a topic for another post.</p>
 
 <p>Back to actors and characters. As my classmates and I were creating these models, two big things came to the surface:</p>
 
 <p>1) We could not recall any of Tom Cruise&rsquo;s many characters&#8217; names.</p>
 
-<p>2) What happens when a character has more than one actor? One of my favorite characters would most certainly break our has many/belongs to association - The Doctor.</p>
+<p>2) What happens when a character has more than one actor? One of my favorite characters would most certainly break our has many/belongs to association&mdash;The Doctor.</p>
 
 <p><img class="center" src="/images/sad_doc_rain.jpeg" width="500" height="500" title="image" alt="images"></p>
 
@@ -191,7 +191,7 @@
 
 <p>The above is our simple model, before The Doctor comes along and breaks everything. Just to be sure I was grasping how NOT to try to include The Doctor and his many actors, here is how it might look:</p>
 
-<p><img class="center" src="/images/the_doctor_breaks_the_model.png" width="800" height="800" title="image" alt="images"></p>
+<p><img class="center" src="/images/the_doctor_broke_the_table.png" width="800" height="800" title="image" alt="images"></p>
 
 <p>Our actors table seems fine, but our characters table is definitely not okay, and we haven&rsquo;t even included the eight doctors from the first twenty-six seasons yet.</p>
 
