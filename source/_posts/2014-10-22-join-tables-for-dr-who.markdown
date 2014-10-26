@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Join Tables in ActiveRecord: Complex Associations, Simple Code"
+subtitle: "blargh"
 date: 2014-10-22 21:38:48 -0400
 comments: true
 categories: ['Ruby', 'Active Record', 'data modeling', 'television', 'The Flatiron School']
@@ -71,21 +72,44 @@ Our actors table seems fine, but our characters table is definitely not okay, an
 
 With our current setup, we have to change the entire schema every time we add another Doctor. This is very, very bad. A database was designed for adding lots of rows. Not so for columns.
 
-In order to make things right, we need a different association: many-to-many. Actors have many characters, and a character has many actors. Thus, we would replace `belongs_to :actor` with `has_many :actors` in `app/models/character.rb`. But how do we get our database set up for this more complicated association?  We need a join table. First the visual:
+In order to make things right, we need a different association: many-to-many. Actors have many characters, and a character has many actors. In order to set our database up for this association, we need a join table. First the visual:
 
-{% img center /images/actors_characters_join.png 650 650 'image' 'images' %}
+{% img center /images/revised_character_actor_with_join.png 650 650 'image' 'images' %}
 
 Now for the migration (assuming your actors table is still intact and you've already removed all but the name column from characters):
 
 ```ruby 004_create_actors_characters_join_table.rb
-class CreateActorsCharactersJoinTable < ActiveRecord::Migration
+class CreateCharacterActorRelationships < ActiveRecord::Migration
   def change
-    create_table :actors_characters, id: false do |t|
-      # using id: false prevents the default primary key column from being created, because there's no use for it here
-      t.integer :actor_id
+    create_table :character_actor_relationships do |t|
       t.integer :character_id
+      t.integer :actor_id
     end
   end
+end
+```
+
+We also need to change our actor and character models. In order for the association to work, we need to somehow connect our actors and characters table through the character_actor_relationships table. The association we need in our actor and character models is `has_many :through`:
+
+```ruby app/models/actor.rb
+class Actor < ActiveRecord::Base
+  has_many :character_actor_relationships
+  has_many :characters, through: :character_actor_relationships
+end
+```
+```ruby app/models/character.rb
+class Character < ActiveRecord::Base
+  has_many :character_actor_relationships
+  has_many :actors, through: :character_actor_relationships
+end
+```
+
+Finally, we need a model for CharacterActorRelationship:
+
+```ruby app/models/character_actor_relationship.rb
+class CharacterActorRelationship < ActiveRecord::Base
+  belongs_to :character
+  belongs_to :actor
 end
 ```
 
