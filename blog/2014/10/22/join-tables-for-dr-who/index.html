@@ -197,9 +197,9 @@
 
 <p>With our current setup, we have to change the entire schema every time we add another Doctor. This is very, very bad. A database was designed for adding lots of rows. Not so for columns.</p>
 
-<p>In order to make things right, we need a different association: many-to-many. Actors have many characters, and a character has many actors. Thus, we would replace <code>belongs_to :actor</code> with <code>has_many :actors</code> in <code>app/models/character.rb</code>. But how do we get our database set up for this more complicated association?  We need a join table. First the visual:</p>
+<p>In order to make things right, we need a different association: many-to-many. Actors have many characters, and a character has many actors. In order to set our database up for this association, we need a join table. First the visual:</p>
 
-<p><img class="center" src="/images/actors_characters_join.png" width="650" height="650" title="image" alt="images"></p>
+<p><img class="center" src="/images/revised_character_actor_with_join.png" width="650" height="650" title="image" alt="images"></p>
 
 <p>Now for the migration (assuming your actors table is still intact and you&rsquo;ve already removed all but the name column from characters):</p>
 
@@ -211,15 +211,50 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateActorsCharactersJoinTable</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateCharacterActorRelationships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:actors_characters</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>      <span class="c1"># using id: false prevents the default primary key column from being created, because there&#39;s no use for it here</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:actor_id</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:character_actor_relationships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
 </span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:character_id</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:actor_id</span>
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We also need to change our actor and character models. In order for the association to work, we need to somehow connect our actors and characters table through the character_actor_relationships table. The association we need in our actor and character models is <code>has_many :through</code>:</p>
+
+<figure class='code'><figcaption><span>app/models/actor.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Actor</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:character_actor_relationships</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:characters</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:character_actor_relationships</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>app/models/character.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Character</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:character_actor_relationships</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:actors</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:character_actor_relationships</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, we need a model for CharacterActorRelationship:</p>
+
+<figure class='code'><figcaption><span>app/models/character_actor_relationship.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CharacterActorRelationship</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:character</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:actor</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
