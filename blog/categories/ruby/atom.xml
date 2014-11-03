@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-02T22:08:27-05:00</updated>
+  <updated>2014-11-02T23:40:00-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Flash Messages With Sessions in Sinatra]]></title>
-    <link href="http://roseweixel.github.io/blog/2014/10/28/sessions-in-sinatra-and-the-cool-things-you-can-do-with-them/"/>
+    <link href="http://roseweixel.github.io/blog/2014/10/28/flash-messages-with-sessions-in-sinatra/"/>
     <updated>2014-10-28T23:18:15-04:00</updated>
-    <id>http://roseweixel.github.io/blog/2014/10/28/sessions-in-sinatra-and-the-cool-things-you-can-do-with-them</id>
+    <id>http://roseweixel.github.io/blog/2014/10/28/flash-messages-with-sessions-in-sinatra</id>
     <content type="html"><![CDATA[<p><a href="http://www.sinatrarb.com/">Sinatra</a> is a DSL (domain specific language) for building small dynamic web apps with all the beauty of Ruby and without the bulk of Rails. Recently, my <a href="http://www.flatironschool.com">Flatiron School</a> classmates and I built a simple playlist app that allows users to perform all the basic CRUD operations on songs - you can create, retrieve, update, and destroy them. Emulating <a href="http://guides.rubyonrails.org/routing.html#crud-verbs-and-actions">RESTful routes for these actions (à la Rails)</a>, I created something like the following:</p>
 
 <pre><code class="ruby app/controllers/songs_controller.rb">
