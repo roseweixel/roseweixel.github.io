@@ -148,7 +148,7 @@
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;/songs/new&#39;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">erb</span> <span class="ss">:&quot;/songs/new&quot;</span>
+</span><span class='line'>    <span class="n">erb</span> <span class="ss">:&quot;songs/new&quot;</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="n">post</span> <span class="s1">&#39;/songs&#39;</span> <span class="k">do</span>
@@ -163,7 +163,7 @@
 </span><span class='line'>
 </span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;/songs/:id/edit&#39;</span> <span class="k">do</span>
 </span><span class='line'>    <span class="vi">@song</span> <span class="o">=</span> <span class="no">Song</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">erb</span> <span class="ss">:&quot;/songs/edit&quot;</span>
+</span><span class='line'>    <span class="n">erb</span> <span class="ss">:&quot;songs/edit&quot;</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="n">post</span> <span class="s1">&#39;/songs/:id&#39;</span> <span class="k">do</span>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Flash Messages | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/flash-messages/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-03T00:47:04-05:00</updated>
+  <updated>2014-11-03T00:50:26-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -29,7 +29,7 @@ class SongsController &lt; ApplicationController
   end
 
   get '/songs/new' do
-    erb :"/songs/new"
+    erb :"songs/new"
   end
 
   post '/songs' do
@@ -44,7 +44,7 @@ class SongsController &lt; ApplicationController
 
   get '/songs/:id/edit' do
     @song = Song.find(params[:id])
-    erb :"/songs/edit"
+    erb :"songs/edit"
   end
 
   post '/songs/:id' do
