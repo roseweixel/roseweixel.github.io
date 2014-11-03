@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Flash Messages | code.life]]></title>
+  <link href="http://roseweixel.github.io/blog/categories/flash-messages/atom.xml" rel="self"/>
+  <link href="http://roseweixel.github.io/"/>
+  <updated>2014-11-02T22:08:27-05:00</updated>
+  <id>http://roseweixel.github.io/</id>
+  <author>
+    <name><![CDATA[Rose Weixel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Flash Messages With Sessions in Sinatra]]></title>
+    <link href="http://roseweixel.github.io/blog/2014/10/28/sessions-in-sinatra-and-the-cool-things-you-can-do-with-them/"/>
+    <updated>2014-10-28T23:18:15-04:00</updated>
+    <id>http://roseweixel.github.io/blog/2014/10/28/sessions-in-sinatra-and-the-cool-things-you-can-do-with-them</id>
+    <content type="html"><![CDATA[<p><a href="http://www.sinatrarb.com/">Sinatra</a> is a DSL (domain specific language) for building small dynamic web apps with all the beauty of Ruby and without the bulk of Rails. Recently, my <a href="http://www.flatironschool.com">Flatiron School</a> classmates and I built a simple playlist app that allows users to perform all the basic CRUD operations on songs - you can create, retrieve, update, and destroy them. Emulating <a href="http://guides.rubyonrails.org/routing.html#crud-verbs-and-actions">RESTful routes for these actions (à la Rails)</a>, I created something like the following:</p>
+
+<pre><code class="ruby app/controllers/songs_controller.rb">
+class SongsController &lt; ApplicationController
+
+  get '/songs' do
+    @songs = Song.all
+    erb :"songs/index"
+  end
+
+  get '/songs/new' do
+    erb :"/songs/new"
+  end
+
+  post '/songs' do
+    @song = Song.create(params[:song])
+    redirect :"/songs/#{@song.id}"
+  end
+
+  get '/songs/:id' do
+    @song = Song.find(params[:id])
+    erb :"songs/show"
+  end
+
+  get '/songs/:id/edit' do
+    @song = Song.find(params[:id])
+    erb :"/songs/edit"
+  end
+
+  post '/songs/:id' do
+    @song = Song.find(params[:id])
+    @song.update(params[:song])
+    redirect :"/songs/#{@song.id}"
+  end
+
+end
+</code></pre>
+
+<p>With the corresponding models and views that make these routes real, a working web app was born. Pretty darn cool. But there was a feature in the spec that was still left to add, and it became a bit of a challenge:</p>
+
+<p>Whenever a song is created or updated, the user should see a message like this:</p>
+
+<p><img class="center" src="/images/song_success_message.png" width="700" height="700" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p>Here&rsquo;s what I wanted to achieve:</p>
+
+<ul>
+<li>The user fills out the form at &lsquo;songs/new&rsquo; and clicks &lsquo;Submit&rsquo;.</li>
+<li>The newly created song&rsquo;s show page &lsquo;songs/:id/show&rsquo; is rendered with a success message.</li>
+<li>The user reloads the page (or navagates away and back), and *poof* the success message is gone.</li>
+</ul>
+
+
+<p>In order to get this to work, I would have to somehow pass a message from one action in the controller to another. The create (or update)action would have to pass a message along to the show action which would pass this message along to the view. It would be nice to have something like an envelope called <code>success_message</code> that could hold one of three values at any given time:</p>
+
+<ul>
+<li><code>"Successfully created song."</code> (right after the song is created)</li>
+<li><code>"Successfully updated song."</code> (right after the song is updated)</li>
+<li><code>nil</code> (immediately after the success message is rendered in the view)</li>
+</ul>
+
+
+<p><a name="erb"></a>
+According to this vision, I was able to put some yet-to-be-functional code in <code>songs/show.erb</code>:</p>
+
+<p>&#8220;`erb</p>
+
+<!-- this bit of code at the bottom of the page would reveal the contents of the success message if it isn't nil -->
+
+
+<p>&lt;% if @success_message %>
+  <div id="success" style="border: 2px solid green;">
+  &lt;%= @success_message %>
+  </div>
+&lt;% end %>
+&#8220;`</p>
+
+<p>But how would @success_message, which would have to be definied in the show action in order for the show page to know about it, be able to hold a message the was created in another controller action (create or update)?</p>
+
+<p>I knew that <code>params</code> is one such data object that holds values that can be passed from one action to another, but as it is already the envelope for carrying and delivering form data entered by the user, it didn&rsquo;t seem like the right place for a success message to live. If only there was some other vessel, like params, but not&hellip;</p>
+
+<p><a name="first_step"></a>
+There is. It&rsquo;s the session cookie! It becomes available to you as soon as you put this in your application controller:</p>
+
+<pre><code class="ruby">class ApplicationController &lt; Sinatra::Base
+  ...
+  # add this line to enable the magic
+  enable :sessions
+end
+</code></pre>
+
+<p>Once you&rsquo;ve added that, you get this handy little object called <code>session</code> that you can access in any of your controllers.  Just to see what it looked like before doing anything with it, I put a <code>binding.pry</code> inside my index action in <code>songs_controller.rb</code>, fired off <code>shotgun</code>, and loaded the index page on my local server. Here&rsquo;s what pry spat out when I asked it what <code>session</code> was:</p>
+
+<pre><code class="irb">[1] pry(#&lt;SongsController&gt;)&gt; session
+=&gt; {"session_id"=&gt;"857d0d856ee646d76204c1138cf57fc497f80ffd85fef19befdbb26f60f8e022", "csrf"=&gt;"598119612cef0d88134413ddd54bad52", "tracking"=&gt;{"HTTP_USER_AGENT"=&gt;"7be1a42d74a413474898ddb9adfef9a5a84719e3", "HTTP_ACCEPT_LANGUAGE"=&gt;"66eae971492938c2dcc2fb1ddc8d7ec3196037da"}}
+</code></pre>
+
+<p>Here it is again, split up onto several lines for readability:</p>
+
+<pre><code class="ruby">{
+  "session_id"=&gt;"857d0d856ee646d76204c1138cf57fc497f80ffd85fef19befdbb26f60f8e022",
+  "csrf"=&gt;"598119612cef0d88134413ddd54bad52",
+  "tracking"=&gt;{
+      "HTTP_USER_AGENT"=&gt;"7be1a42d74a413474898ddb9adfef9a5a84719e3",
+      "HTTP_ACCEPT_LANGUAGE"=&gt;"66eae971492938c2dcc2fb1ddc8d7ec3196037da"
+  }
+}
+</code></pre>
+
+<p>So that&rsquo;s our session object, before we&rsquo;ve done anything with it. Having just learned about preventing cross-site request forgery in Rails, I recognize one of the elements in session as our CSRF token. If you want to learn more about this (and you should!), read about it <a href="http://guides.rubyonrails.org/security.html">here</a>. For now, let&rsquo;s move on and see how we can use this session object to help us with our success message.</p>
+
+<p>First off, if we&rsquo;re going to do anything with it, it would help to understand what kind of object <code>session</code> is. It looks like an ordinary Ruby hash, but in fact it is a special kind of Rack object. Why guess when you can <code>pry</code> it?</p>
+
+<pre><code class="irb">[2] pry(#&lt;SongsController&gt;)&gt; session.class
+=&gt; Rack::Session::Abstract::SessionHash
+</code></pre>
+
+<p>As it turns out, the <code>SessionHash</code> object has a lot in common with a <code>Hash</code> object. 103 methods in common (out of 177 total), to be exact:</p>
+
+<pre><code class="irb">[3] pry(#&lt;SongsController&gt;)&gt; session.methods.select{ |method| Hash.methods.include?(method) }.count
+=&gt; 103
+</code></pre>
+
+<p>One <code>Hash</code>-like thing you can do with <code>session</code> is put new keys into it, with values that you can assign and change at your whim. To me, this sounded like just the right envelope for the success message!</p>
+
+<p>Here&rsquo;s what I did (after enabling sessions, as shown <a href="#first_step">above</a>):</p>
+
+<p>1) At the bottom of my create action (immediately before redirecting to the show page), I added a <code>:success_message</code> key to <code>session</code>, setting its value to the one-time message I want my users to see:</p>
+
+<pre><code class="ruby songs_controller.rb">  post '/songs' do
+    @song = Song.create(params[:song])
+
+    session[:success_message] = "Successfully created song."
+
+    redirect :"/songs/#{@song.id}"
+  end
+</code></pre>
+
+<p>2) I did the same thing for my update action:</p>
+
+<pre><code class="ruby">  post '/songs/:id' do
+    @song = Song.find(params[:id])
+    @song.update(params[:song])
+
+    session[:success_message] = "Song successfully updated."
+
+    redirect :"/songs/#{@song.id}"
+  end
+</code></pre>
+
+<p>3) Then, I added some code at the top of the show action to pass this message along so it could be rendered in the <a href="#erb">erb template</a>, and to ensure that the message is immediately set to <code>nil</code> so it will only render once:</p>
+
+<pre><code class="ruby">  get '/songs/:id' do
+    @song = Song.find(params[:id])
+
+    @success_message = session[:success_message]
+    session[:success_message] = nil
+
+    erb :'songs/show'
+  end
+</code></pre>
+
+<p>Now my success message behaves exactly as I imaged it should, appearing and disappearing at the appropriate times.</p>
+
+<p>I&rsquo;m sure there are many more uses for sessions, as well as other (and perhaps simpler) ways to implement flash messages in Sinatra apps. I hope you have as much fun playing with it as I did.</p>
+]]></content>
+  </entry>
+  
+</feed>
