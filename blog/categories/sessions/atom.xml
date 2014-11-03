@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Sessions | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/sessions/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-03T00:45:20-05:00</updated>
+  <updated>2014-11-03T00:47:04-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -95,7 +95,7 @@ According to this vision, I was able to put some yet-to-be-functional code in <c
 &lt;% end %>
 &#8220;`</p>
 
-<p>But how would @success_message, which would have to be definied in the show action in order for the show page to know about it, be able to hold a message the was created in another controller action (create or update)?</p>
+<p>But how would <code>@success_message</code>, which would have to be definied in the show action in order for the show page to know about it, be able to hold a message the was created in another controller action (create or update)?</p>
 
 <p>I knew that <code>params</code> is one such data object that holds values that can be passed from one action to another, but as it is already the envelope for carrying and delivering form data entered by the user, it didn&rsquo;t seem like the right place for a success message to live. If only there was some other vessel, like params, but not&hellip;</p>
 
