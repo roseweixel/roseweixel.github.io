@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Flatiron School | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/flatiron-school/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-03T00:50:26-05:00</updated>
+  <updated>2014-11-07T00:43:06-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -100,7 +100,7 @@ According to this vision, I was able to put some yet-to-be-functional code in <c
 <p>I knew that <code>params</code> is one such data object that holds values that can be passed from one action to another, but as it is already the envelope for carrying and delivering form data entered by the user, it didn&rsquo;t seem like the right place for a success message to live. If only there was some other vessel, like params, but not&hellip;</p>
 
 <p><a name="first_step"></a>
-There is. It&rsquo;s the session cookie! It becomes available to you as soon as you put this in your application controller:</p>
+There is. It&rsquo;s a session! It becomes available to you as soon as you put this in your application controller:</p>
 
 <pre><code class="ruby">class ApplicationController &lt; Sinatra::Base
   ...
@@ -109,7 +109,7 @@ There is. It&rsquo;s the session cookie! It becomes available to you as soon as 
 end
 </code></pre>
 
-<p>Once you&rsquo;ve added that, you get this handy little object called <code>session</code> that you can access in any of your controllers.  Just to see what it looked like before doing anything with it, I put a <code>binding.pry</code> inside my index action in <code>songs_controller.rb</code>, fired off <code>shotgun</code>, and loaded the index page on my local server. Here&rsquo;s what pry spat out when I asked it what <code>session</code> was:</p>
+<p>Once you&rsquo;ve added that, you get this handy little object called <code>session</code> that you can access in any of your controllers, which can in turn pass along any value it contains to a view.  Just to see what it looked like before doing anything with it, I put a <code>binding.pry</code> inside my index action in <code>songs_controller.rb</code>, fired off <code>shotgun</code>, and loaded the index page on my local server. Here&rsquo;s what pry spat out when I asked it what <code>session</code> was:</p>
 
 <pre><code class="irb">[1] pry(#&lt;SongsController&gt;)&gt; session
 =&gt; {"session_id"=&gt;"857d0d856ee646d76204c1138cf57fc497f80ffd85fef19befdbb26f60f8e022", "csrf"=&gt;"598119612cef0d88134413ddd54bad52", "tracking"=&gt;{"HTTP_USER_AGENT"=&gt;"7be1a42d74a413474898ddb9adfef9a5a84719e3", "HTTP_ACCEPT_LANGUAGE"=&gt;"66eae971492938c2dcc2fb1ddc8d7ec3196037da"}}
@@ -127,9 +127,11 @@ end
 }
 </code></pre>
 
-<p>So that&rsquo;s our session object, before we&rsquo;ve done anything with it. Having just learned about preventing cross-site request forgery in Rails, I recognize one of the elements in session as our CSRF token. If you want to learn more about this (and you should!), read about it <a href="http://guides.rubyonrails.org/security.html">here</a>. For now, let&rsquo;s move on and see how we can use this session object to help us with our success message.</p>
+<p>So that&rsquo;s our session object, before we&rsquo;ve done anything with it. Inside it there&rsquo;s <code>"session_id"</code>, a unique key that lives inside your cookie for the life of your session. What else is in there? Having just learned about preventing cross-site request forgery, I presumed <code>"csrf"=&gt;"598119612cef0d88134413ddd54bad52"</code> to be the CSRF token. If you want to learn more about this (and you should!), read about it <a href="http://guides.rubyonrails.org/security.html">here</a>. Finally there&rsquo;s <code>"tracking"</code>, which I believe holds information about the user&rsquo;s browser. For our current purposes (creating a flash message), we don&rsquo;t need to care about these values, but it helps to see how session is structured and what kinds of things it can contain.</p>
 
-<p>First off, if we&rsquo;re going to do anything with it, it would help to understand what kind of object <code>session</code> is. It looks like an ordinary Ruby hash, but in fact it is a special kind of Rack object. Why guess when you can <code>pry</code> it?</p>
+<p>Let&rsquo;s move on and see how we can use this session object to help us with our success message.</p>
+
+<p>Before doing anything to it, it would help to understand what kind of object <code>session</code> is. It looks like an ordinary Ruby hash, but in fact it is a special kind of Rack object. Why guess when you can <code>pry</code> it?</p>
 
 <pre><code class="irb">[2] pry(#&lt;SongsController&gt;)&gt; session.class
 =&gt; Rack::Session::Abstract::SessionHash
@@ -141,7 +143,7 @@ end
 =&gt; 103
 </code></pre>
 
-<p>One <code>Hash</code>-like thing you can do with <code>session</code> is put new keys into it, with values that you can assign and change at your whim. To me, this sounded like just the right envelope for the success message!</p>
+<p>One <code>Hash</code>-like thing you can do with <code>session</code> is put new keys into it, with values that you can assign and change at your whim. And since the session persists from one HTTP request to another, it can pass values around from one action in the controller to another. This sounded like just the right object to hold the success message!</p>
 
 <p>Here&rsquo;s what I did (after enabling sessions, as shown <a href="#first_step">above</a>):</p>
 
@@ -168,7 +170,7 @@ end
   end
 </code></pre>
 
-<p>3) Then, I added some code at the top of the show action to pass this message along so it could be rendered in the <a href="#erb">erb template</a>, and to ensure that the message is immediately set to <code>nil</code> so it will only render once:</p>
+<p>3) Then, I added some code at the top of the show action to pass this message along so it could be rendered by the <a href="#erb">erb template</a> in the view, and to ensure that the message is immediately set to <code>nil</code> so it will only render once:</p>
 
 <pre><code class="ruby">  get '/songs/:id' do
     @song = Song.find(params[:id])
@@ -182,7 +184,11 @@ end
 
 <p>Now my success message behaves exactly as I imaged it should, appearing and disappearing at the appropriate times.</p>
 
-<p>I&rsquo;m sure there are many more uses for sessions, as well as other (and perhaps simpler) ways to implement flash messages in Sinatra apps. I hope you have as much fun playing with it as I did.</p>
+<p>Due to the stateless nature of HTTP requests, had I simply used an instance variable <code>@success_message</code> inside these <code>get</code> and <code>post</code> actions, any value assigned to it would have been instantly forgotten the moment another request was made. The <code>@success_message</code> inside the two actions would have in fact been completely out of each other&rsquo;s scope. The session, however, is available across all actions.</p>
+
+<p>This ability to fake statefulness in your controllers opens up a world of functionality other than flash messages, not the least of which is maintaining a user&rsquo;s &ldquo;logged in&rdquo; state as they browse from one page to another. Without sessions, almost all of the interactions and transactions that occur over the Internet as we know it could not even happen.</p>
+
+<p>So if you haven&rsquo;t yet, sit down and get to know the powerful little session object. It&rsquo;s definitely worth prying into.</p>
 ]]></content>
   </entry>
   
