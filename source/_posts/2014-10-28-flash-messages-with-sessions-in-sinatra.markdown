@@ -176,5 +176,5 @@ Due to the stateless nature of HTTP requests, had I simply used an instance vari
 
 This ability to fake statefulness in your controllers opens up a world of functionality other than flash messages, not the least of which is maintaining a user's "logged in" state as they browse from one page to another. Without sessions, almost all of the interactions and transactions that occur over the Internet as we know it could not even happen. 
 
-So if you haven't yet, sit down and get to know the powerful little session object. It's definitely worth prying into.
+So if you haven't yet, sit down and get to know the powerful little session. It's definitely worth prying into.
 
