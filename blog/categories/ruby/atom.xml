@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-17T00:37:17-05:00</updated>
+  <updated>2014-11-17T00:43:02-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -126,7 +126,7 @@ debug(dog + ' says woof after the function is called');
 
 <h2>Arity Schmarity</h2>
 
-<p>Before we go any further, I must admit that hadn&rsquo;t heard the word arity until I crossed paths with JavaScript. I reckon I&rsquo;m not alone in this, so here&rsquo;s a definition, courtesy of <a href="http://en.wikipedia.org/wiki/Arity">Wikipedia</a>:</p>
+<p>Before we go any further, I must admit that hadn&rsquo;t heard the word arity until I crossed paths with JavaScript. I reckon I&rsquo;m not alone in this, so here&rsquo;s a definition courtesy of <a href="http://en.wikipedia.org/wiki/Arity">Wikipedia</a>:</p>
 
 <blockquote><p>In logic, mathematics, and computer science, the <strong>arity</strong> of a function or operation is the number of arguments or operands the function or operation accepts.</p></blockquote>
 
