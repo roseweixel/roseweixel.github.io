@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-07T16:54:19-05:00</updated>
+  <updated>2014-11-17T00:32:25-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -12,6 +12,480 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript: The Honey Badger of Programming Languages]]></title>
+    <link href="http://roseweixel.github.io/blog/2014/11/15/javascript-the-honey-badger-of-programming-languages/"/>
+    <updated>2014-11-15T17:49:20-05:00</updated>
+    <id>http://roseweixel.github.io/blog/2014/11/15/javascript-the-honey-badger-of-programming-languages</id>
+    <content type="html"><![CDATA[<p>After spending six weeks in Ruby land, last week was all JavaScript all the time at <a href="http://www.flatironschool.com">The Flatiron School</a>. I feel like I&rsquo;ve just added a hammer with superpowers to my programming tool box. You might bend a few nails along the way, but you can build almost anything with it.</p>
+
+<p>Also, JavaScript is weird. Although it cares a lot about semi-colons, there are some important ways in which, just like the honey badger, it just doesn&rsquo;t seem to care at all. Here I will attempt to get comfortable with this strange new animal by diving deep into some of its more surprising aspects. To provide some contrast and context, especially for those who (like myself) are more at home with Ruby, I&rsquo;ll make some comparisons as I go along.</p>
+
+<h2>Scope</h2>
+
+<p>Let&rsquo;s dive right in. For comparison, here is some Ruby:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/ruby.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">dog</span> <span class="o">=</span> <span class="s1">&#39;Fido&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">bark</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">dog</span><span class="si">}</span><span class="s2"> says woof&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">bark</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In Ruby, a method is a scope gate, so <code>dog</code> is not defined in the <code>bark</code> method. Ruby will tell you this in no uncertain terms:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">[18:12:24] javascript-ruby-comparison</span>
+</span><span class='line'><span class="go">♥ ruby ruby.rb</span>
+</span><span class='line'><span class="go">ruby.rb:4:in `bark&#39;: undefined local variable or method `dog&#39; for main:Object (NameError)</span>
+</span><span class='line'><span class="go"> from ruby.rb:7:in `&lt;main&gt;&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On line 4, Ruby has no idea about what <code>dog</code> is, because the universe in line 4 is the local scope of the method <code>bark</code>. This scope gate can be very nice, since it means we cannot accidentally overwrite a variable we defined in the global scope from within a method. In order to make <code>dog</code> into a global variable that we can access inside the method, Ruby requires us to be very explicit about it, putting a <code>$</code> in front of that variable both where it is defined and wherever it is referenced:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/ruby.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$dog</span> <span class="o">=</span> <span class="s1">&#39;Fido&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">bark</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$dog</span><span class="si">}</span><span class="s2"> says woof&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">bark</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we clearly see that we are playing with a global variable, and Ruby plays along:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">[18:32:01] javascript-ruby-comparison</span>
+</span><span class='line'><span class="go">♥ ruby ruby.rb</span>
+</span><span class='line'><span class="go">Fido says woof</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>While JavaScript does have a concept of functions creating a new scope, variables assigned outside of those functions can easily be accessed from within:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/javascript.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">dog</span> <span class="o">=</span> <span class="s1">&#39;Fido&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">bark</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">bark</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>JavaScript doesn&rsquo;t care if you want to reach outside the function&rsquo;s scope to grab a variable. JavaScript functions have knowledge of the universe around them:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">[18:38:34] javascript-ruby-comparison</span>
+</span><span class='line'><span class="go">♥ jsc javascript.js </span>
+</span><span class='line'><span class="go">--&gt; Fido says woof</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So what else can you do with a variable defined outside a function from within a function? As it turns out, JavaScript will let you do whatever you want:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/javascript.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">dog</span> <span class="o">=</span> <span class="s1">&#39;Fido&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">bark</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">dog</span> <span class="o">=</span> <span class="s1">&#39;Spot&#39;</span>
+</span><span class='line'>  <span class="nx">debug</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof from within the function&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof outside of the function&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">bark</span><span class="p">();</span>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof after the function is called&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What happened to Fido?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">[20:47:14] javascript-ruby-comparison</span>
+</span><span class='line'><span class="go">♥ jsc javascript.js </span>
+</span><span class='line'><span class="go">--&gt; Fido says woof outside of the function</span>
+</span><span class='line'><span class="go">--&gt; Spot says woof from within the function</span>
+</span><span class='line'><span class="go">--&gt; Spot says woof after the function is called</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Looks like the name change was permanent. And by the way, by always using <code>var</code>, we can prevent such dangers:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/javascript.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">dog</span> <span class="o">=</span> <span class="s1">&#39;Fido&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">bark</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">dog</span> <span class="o">=</span> <span class="s1">&#39;Spot&#39;</span>
+</span><span class='line'>  <span class="nx">debug</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof from within the function&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof outside of the function&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">bark</span><span class="p">();</span>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="nx">dog</span> <span class="o">+</span> <span class="s1">&#39; says woof after the function is called&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">♥ jsc javascript.js </span>
+</span><span class='line'><span class="go">--&gt; Fido says woof outside of the function</span>
+</span><span class='line'><span class="go">--&gt; Spot says woof from within the function</span>
+</span><span class='line'><span class="go">--&gt; Fido says woof after the function is called</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By using <code>var</code> within the function, we created an entirely different <code>dog</code> and did not alter the original.</p>
+
+<h2>Arity Schmarity</h2>
+
+<p>Before we go any further, I must admit that hadn&rsquo;t heard the word arity until I crossed paths with JavaScript. I reckon I&rsquo;m not alone in this, so here&rsquo;s a definition, courtesy of <a href="http://en.wikipedia.org/wiki/Arity">Wikipedia</a>:</p>
+
+<blockquote><p>In logic, mathematics, and computer science, the <strong>arity</strong> of a function or operation is the number of arguments or operands the function or operation accepts.</p></blockquote>
+
+<p>OK. This sounds like something I know from Ruby land. Here&rsquo;s a familiar example:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/ruby.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Dog</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>According to the above definition, the <code>initialize</code> method of the <code>Dog</code> class takes exactly one argument. You could say its arity is one (more commonly, this is known as a unary function).</p>
+
+<p>Ruby cares about arity, and will give you very nice error messages to make you aware of this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">2.1.2 :002 &gt; require &#39;ruby.rb&#39;</span>
+</span><span class='line'><span class="go"> =&gt; true </span>
+</span><span class='line'><span class="go">2.1.2 :003 &gt; fido = Dog.new</span>
+</span><span class='line'><span class="go">ArgumentError: wrong number of arguments (0 for 1)</span>
+</span><span class='line'><span class="go"> from /Users/rose/Development/code/javascript-ruby-comparison/ruby.rb:3:in `initialize&#39;</span>
+</span><span class='line'><span class="go"> from (irb):3:in `new&#39;</span>
+</span><span class='line'><span class="go"> from (irb):3</span>
+</span><span class='line'><span class="go"> from /Users/rose/.rvm/rubies/ruby-2.1.2/bin/irb:11:in `&lt;main&gt;&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I tried to make a new <code>Dog</code> with 0 arguments, and Ruby was expecting 1. So Ruby blew up. This is arity checking at work.</p>
+
+<p>JavaScript does not care about arity! Here&rsquo;s photographic proof (this is a lot easier to see in the browser&rsquo;s JavaScript console):</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/js-no-arity-checking.png" width="700" height="700" title="image" alt="images"></p>
+
+<p>To review what just happened:</p>
+
+<ul>
+<li>I made a constructor function for <code>Dog</code> (yeah, functions are really all-purpose in JavaScript, so that right there was a class definition of sorts).</li>
+<li>In this constructor function, I said that <code>Dog</code> takes a <code>name</code>.</li>
+<li>I made a new <code>Dog</code>, <code>fido</code>, and did not pass in any arguments.</li>
+<li>JavaScript did not blow up.</li>
+<li>Just to be sure, I asked JavaScript to show me <code>fido</code>.</li>
+<li>JavaScript returned a <code>Dog</code> object with a <code>name</code> of <code>undefined</code>.</li>
+</ul>
+
+
+<p>Whenever it can, JavaScript will try to help you out, whether you want it to or not. If you say a <code>Dog</code> has a <code>name</code> and then forget to give it one, JavaScript will trust that this was your intent and will throw in an <code>undefined</code> rather than yelling at you.</p>
+
+<h2>Teaching Old Dogs New Tricks</h2>
+
+<p>Ruby cares about defining an object&rsquo;s attributes and behaviors up front. Objects in Ruby behave in consistent and predicatable ways.</p>
+
+<p>Using our prior definition of the <code>Dog</code> class, Ruby will let us know that we haven&rsquo;t taught <code>Dog</code>s to bark yet:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">2.1.2 :001 &gt; require &#39;ruby.rb&#39;</span>
+</span><span class='line'><span class="go"> =&gt; true </span>
+</span><span class='line'><span class="go">2.1.2 :002 &gt; fido = Dog.new(&#39;Fido&#39;)</span>
+</span><span class='line'><span class="go"> =&gt; #&lt;Dog:0x007f9fd5757c78 @name=&quot;Fido&quot;&gt; </span>
+</span><span class='line'><span class="go">2.1.2 :003 &gt; fido.bark</span>
+</span><span class='line'><span class="go">NoMethodError: undefined method `bark&#39; for #&lt;Dog:0x007f9fd5757c78 @name=&quot;Fido&quot;&gt;</span>
+</span><span class='line'><span class="go"> from (irb):3</span>
+</span><span class='line'><span class="go"> from /Users/rose/.rvm/rubies/ruby-2.1.2/bin/irb:11:in `&lt;main&gt;&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Of course! We did not define a <code>bark</code> method, so we get a predictable <code>NoMethodError</code>.</p>
+
+<p>JavaScript doesn&rsquo;t care about defining all of an object&rsquo;s attributes and behaviors up front, and pretty much lets you do whatever you want, whenever you want. Here&rsquo;s a continuation of the console session above:</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/js-fido-barks.png" width="700" height="700" title="image" alt="images"></p>
+
+<ul>
+<li>I asked <code>fido</code> to bark, having never defined a <code>bark</code> function or attribute. JavaScript quietly returned <code>undefined</code>.</li>
+<li>I told JavaScript to give <code>fido.bark</code> the value of <code>'woof'</code>, and JavaScript happily obliged.</li>
+<li>Now not only can <code>fido</code> bark, but the <code>Dog</code> object that is <code>fido</code> has been fundamentally altered, now containing a new <code>bark</code> attribute!</li>
+</ul>
+
+
+<p>So, can all <code>Dog</code>s bark now?</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/js-spot-cant-bark.png" width="700" height="700" title="image" alt="images"></p>
+
+<p>No, they cannot. Now the definition of <code>Dog</code> is a bit of a mess - <code>fido</code> is a <code>Dog</code> that can bark, while <code>spot</code> can&rsquo;t. The very nature of <code>Dog</code>-ness has been brought into question, and JavaScript is fine with all of this. No errors, no complaining. For better or for worse.</p>
+
+<h2>Playing with Global Scope</h2>
+
+<p>This one is extra weird, so get ready.</p>
+
+<p>In the hierarchy of Ruby objects, <code>main</code> is the top level:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">♥ irb</span>
+</span><span class='line'><span class="go">2.1.2 :001 &gt; self</span>
+</span><span class='line'><span class="go"> =&gt; main </span>
+</span><span class='line'><span class="go">2.1.2 :002 &gt; self.class</span>
+</span><span class='line'><span class="go"> =&gt; Object </span>
+</span><span class='line'><span class="go">2.1.2 :003 &gt; </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I don&rsquo;t know why you&rsquo;d want to mess with <code>main</code>, and Ruby makes certain it&rsquo;s not easy to do so (in fact, it&rsquo;s impossible to do so by accident):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">2.1.2 :003 &gt; self.name</span>
+</span><span class='line'><span class="go">NoMethodError: undefined method `name&#39; for main:Object</span>
+</span><span class='line'><span class="go"> from (irb):3</span>
+</span><span class='line'><span class="go"> from /Users/rose/.rvm/rubies/ruby-2.1.2/bin/irb:11:in `&lt;main&gt;&#39;</span>
+</span><span class='line'><span class="go">2.1.2 :004 &gt; self.name = &quot;Rose&quot;</span>
+</span><span class='line'><span class="go">NoMethodError: undefined method `name=&#39; for main:Object</span>
+</span><span class='line'><span class="go"> from (irb):4</span>
+</span><span class='line'><span class="go"> from /Users/rose/.rvm/rubies/ruby-2.1.2/bin/irb:11:in `&lt;main&gt;&#39;</span>
+</span><span class='line'><span class="go">2.1.2 :005 &gt; </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Want to mess with the top-level object in JavaScript? Go right ahead, JavaScript doesn&rsquo;t care!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="gp">&gt;</span>&gt;&gt; this.name
+</span><span class='line'><span class="go">undefined</span>
+</span><span class='line'><span class="gp">&gt;</span>&gt;&gt; this.name <span class="o">=</span> <span class="s2">&quot;Rose&quot;</span>
+</span><span class='line'><span class="go">Rose</span>
+</span><span class='line'><span class="gp">&gt;</span>&gt;&gt; this
+</span><span class='line'><span class="go">[object global]</span>
+</span><span class='line'><span class="gp">&gt;</span>&gt;&gt; this.name
+</span><span class='line'><span class="go">Rose</span>
+</span><span class='line'><span class="gp">&gt;</span>&gt;&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I just named the global object after myself, and JavaScript did not care one bit. This example is a bit contrived, but believe me that some undesireable things can happen if you don&rsquo;t watch out for global assignment. Here&rsquo;s a (slightly) less contrived example:</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/javascript.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">Dog</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">hunger</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">bowl</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Dog</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">checkNeeds</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">hunger</span> <span class="o">===</span> <span class="kc">true</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">(</span><span class="kd">function</span> <span class="nx">feed</span><span class="p">(){</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">hunger</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">bowl</span> <span class="o">=</span> <span class="s1">&#39;empty&#39;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">})();</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">(</span><span class="kd">function</span> <span class="nx">play</span><span class="p">(){</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">hunger</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">})();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fido</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Dog</span><span class="p">(</span><span class="s1">&#39;Fido&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="nx">fido</span><span class="p">.</span><span class="nx">hunger</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">fido</span><span class="p">.</span><span class="nx">checkNeeds</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="nx">fido</span><span class="p">.</span><span class="nx">hunger</span><span class="p">);</span>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">hunger</span><span class="p">);</span>
+</span><span class='line'><span class="nx">debug</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If I run this code, here&rsquo;s what my <code>debug</code> statements reveal:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">♥ jsc javascript.js </span>
+</span><span class='line'><span class="go">--&gt; true          // fido was born hungry</span>
+</span><span class='line'><span class="go">--&gt; true          // after calling checkNeeds(), he&#39;s still hungry...</span>
+</span><span class='line'><span class="go">--&gt; false         // ...but this isn&#39;t hungry...</span>
+</span><span class='line'><span class="go">--&gt; [object global]   // because we fed the global object instead of fido!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, Bad Things can happen when the global object is always available. Fortunately, there is a way for you to make JavaScript care about this! You just have to tell JavaScript to <code>use strict</code>.</p>
+
+<figure class='code'><figcaption><span>javascript-ruby-comparison/javascript.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Dog</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+</span><span class='line'>  <span class="c1">// the rest of my code...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, when we run the code, JavaScript will blow up just the way we want it to!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">♥ jsc javascript.js </span>
+</span><span class='line'><span class="go">--&gt; true</span>
+</span><span class='line'><span class="go">Exception: TypeError: Attempted to assign to readonly property.</span>
+</span><span class='line'><span class="go">feed@javascript.js:12:17</span>
+</span><span class='line'><span class="go">checkNeeds@javascript.js:14:11</span>
+</span><span class='line'><span class="go">global code@javascript.js:24:16</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The Moral of the Story</h2>
+
+<p>This was a long post, and it probably could get longer. But I think this is enough to chew on for now. The bottom line is that JavaScript has some crazy ways, but these ways are not unlearnable, and the reward for learning them is a much saner coding experience. If you understand the quirks, remember your <code>var</code>s, and always <code>use strict</code>, you and JavaScript can be unstoppable, just like the honey badger.</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/nothing-stops-honey-badger.png" width="500" height="500" title="image" alt="images"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Flash Messages With Sessions in Sinatra]]></title>
