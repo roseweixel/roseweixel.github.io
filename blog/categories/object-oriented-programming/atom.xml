@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: This | code.life]]></title>
-  <link href="http://roseweixel.github.io/blog/categories/this/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Object-oriented Programming | code.life]]></title>
+  <link href="http://roseweixel.github.io/blog/categories/object-oriented-programming/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-17T00:32:25-05:00</updated>
+  <updated>2014-11-17T00:37:17-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
