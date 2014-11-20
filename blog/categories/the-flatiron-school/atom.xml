@@ -4,7 +4,7 @@
   <title><![CDATA[Category: The Flatiron School | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/the-flatiron-school/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-11-17T00:43:02-05:00</updated>
+  <updated>2014-11-20T12:52:11-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Join Tables in ActiveRecord: Complex Associations, Simple Code]]></title>
-    <link href="http://roseweixel.github.io/blog/2014/10/22/join-tables-for-dr-who/"/>
+    <link href="http://roseweixel.github.io/blog/2014/10/22/join-tables-in-active-record/"/>
     <updated>2014-10-22T21:38:48-04:00</updated>
-    <id>http://roseweixel.github.io/blog/2014/10/22/join-tables-for-dr-who</id>
+    <id>http://roseweixel.github.io/blog/2014/10/22/join-tables-in-active-record</id>
     <content type="html"><![CDATA[<p>Up until a few weeks ago, my entire coding toolbox consisted of a small sample of some built in Ruby methods. Two of these became blog post topics (<a href="http://roseweixel.github.io/blog/2014/10/08/looking-for-something-just-number-find-it/">#find</a> and <a href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/">#slice</a>), and one&mdash;the <code>&lt;&lt;</code> method&mdash;became the central character of my first coding dream/nightmare, with reserved words <code>while</code> and <code>true</code> playing key supporting roles. I used these methods to write other pretty simple methods.</p>
 
 <p>After just a few weeks at <a href="http://www.flatironschool.com">The Flatiron School</a>, I&rsquo;m quickly learning that building up complex programs, like web apps, can&rsquo;t (or maybe really just shouldn&rsquo;t) be accomplished by writing out method after method in one big file. You need the right structures and tools to create complex objects, persist them in a database, and express relationships between these objects. Using ActiveRecord, you get some really simple and powerful tools for all this that hide a huge amount of complexity away, allowing you focus on designing your app to do what you want it to do.</p>
