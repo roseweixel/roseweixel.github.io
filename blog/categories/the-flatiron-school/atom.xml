@@ -4,7 +4,7 @@
   <title><![CDATA[Category: The Flatiron School | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/the-flatiron-school/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-12-05T00:39:07-05:00</updated>
+  <updated>2014-12-05T00:57:51-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -48,7 +48,7 @@
 end
 </code></pre>
 
-<p>2) In the model for Friendship, I taught it that Friends are really just other users:</p>
+<p>2) In the model for Friendship, I taught it that Friends are really just other Users:</p>
 
 <pre><code class="ruby">class Friendship &lt; ActiveRecord::Base
   belongs_to :user
@@ -150,7 +150,7 @@ end
 
 <p>I set the <code>state</code> of the friendship to <code>'pending'</code> whenever it first gets created. Then, when the User who was &ldquo;friended&rdquo; decides to hit the &lsquo;Accept&rsquo; button (or the &lsquo;Reject&rsquo; button as the case may be), the friendship can get updated accordingly.</p>
 
-<p>So, although the implementation of friendships I ended up with in my first attempt has the functionality I wanted, but as I mentioned before, it&rsquo;s not the most efficient. While my reasoning was that it is not desireable to have two rows in the friendships join table for every relationship that gets created, this reasoning did not take into account the way databases work. Because I have to query twice (Who are the people I&rsquo;ve friended? Who are the people who have friended me?) every single time I want to access my friends, this is actually unneccesarily expensive. Since rows in a database are cheap, why worry about adding an extra row if it reduces the number of times you need to hit the database?</p>
+<p>So, although the implementation of friendships I ended up with in my first attempt has the functionality I wanted, but as I mentioned before, it&rsquo;s not the most efficient. While my reasoning was that it is not desirable to have two rows in the friendships join table for every relationship that gets created, this reasoning did not take into account the way databases work. Because I have to query twice (Who are the people I&rsquo;ve friended? Who are the people who have friended me?) every single time I want to access my friends, this is actually unneccesarily expensive. Since rows in a database are cheap, why worry about adding an extra row if it reduces the number of times you need to hit the database?</p>
 
 <p>I got a second crack at this problem during my current project, an app for teachers that includes functionality for generating seating charts according to who works well together and who doesn&rsquo;t. Along with my teammates, we built Buddyships (and Enemyships, too!) in a more reciprocal way:</p>
 
@@ -193,9 +193,9 @@ end
 end
 </code></pre>
 
-<p>In this implementation, two rows in the join table are created for each relationship, in a method aptly called <code>inversify</code>.</p>
+<p>In this implementation, two rows in the join table are created for each relationship, using a method aptly called <code>inversify</code>.</p>
 
-<p>Because of the reciprocal nature of the relationship created in this model, one database query (<code>student.enemyships</code>) is all it takes to find all potential Enemies.</p>
+<p>Because of the reciprocal nature of the relationship created in this model, one database query (<code>student.enemyships</code>) is all it takes to find all potential Enemies. If you were only creating relationships, you&rsquo;d care about not writing to the database more than you needed to. But since, in general, we query for friendships way more frequently than we create them, we want to make sure the querying is as efficient as possible.</p>
 
 <p>So, while one-way relationships are fine for a follower-followee type of relationship, if you want to create a reciprocal relationship in your next app, don&rsquo;t shy away from those extra rows in the database.</p>
 ]]></content>
