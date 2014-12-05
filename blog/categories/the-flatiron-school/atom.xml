@@ -4,7 +4,7 @@
   <title><![CDATA[Category: The Flatiron School | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/the-flatiron-school/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2014-12-05T00:36:06-05:00</updated>
+  <updated>2014-12-05T00:39:07-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -20,7 +20,7 @@
     <id>http://roseweixel.github.io/blog/2014/12/04/making-friends-with-code</id>
     <content type="html"><![CDATA[<p>This post will not be about how I&rsquo;ve spent the last ten weeks at <a href="http://flatironschool.com/">The Flatiron School</a> making awesome friends while coding together, or about my process of becoming friends with code. Those are posts for another time. This one is about the kinds of friendships that are actually built with code, the kind you can persist in a database.</p>
 
-<p>Over the course of working on my two most recent projects, I&rsquo;ve discovered that there is more than one way to make a friendship happen on the backend of a Rails app (or most likely any app). My first crack at making friendships was for a <a href="https://lacquer-love-and-lend.herokuapp.com/">nail polish sharing app</a> where friends can view each other&rsquo;s collections and ask to borrow from each other. I watched Treehouse&rsquo;s tutorial on <a href="http://teamtreehouse.com/library/building-social-features-in-ruby-on-rails">building social features in Ruby on Rails</a>, which is a good place to start if you&rsquo;ve never done something like this before. Although it helped me understand it somewhat, the way it was done in the tutorial still seemed pretty complicated to me so I decided to try to figure it out on my own so I could break it down and understand it.</p>
+<p>Over the course of working on my two most recent projects, I&rsquo;ve discovered that there is more than one way to make a friendship happen on the backend of a Rails app (or most likely any app). My first crack at making friendships was for a <a href="https://lacquer-love-and-lend.herokuapp.com/">nail polish sharing app</a> where friends can view each other&rsquo;s collections and ask to borrow from each other. I watched Treehouse&rsquo;s tutorial on <a href="http://teamtreehouse.com/library/building-social-features-in-ruby-on-rails">building social features in Ruby on Rails</a>, which is a good place to start if you&rsquo;ve never done something like this before. Although it helped me understand it somewhat, the way it was done in the tutorial still seemed pretty complicated to me. I decided to try to figure it out on my own so that I could break it down and understand it better.</p>
 
 <p>Here are the basic back-end requirements for creating a friendship (clearly some buttons and forms on the front-end are needed, but those are implementation details, so I&rsquo;ll leave them out of this post):</p>
 
