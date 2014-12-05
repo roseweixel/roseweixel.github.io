@@ -3,6 +3,14 @@
   
   
   <url>
+    <loc>http://roseweixel.github.io/blog/2014/12/04/making-friends-with-code/</loc>
+    
+    <lastmod>2014-12-04T23:01:41-05:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://roseweixel.github.io/blog/2014/11/20/awesome-programmer-equals-equals-awesome-person/</loc>
     
     <lastmod>2014-11-20T20:30:03-05:00</lastmod>
@@ -53,14 +61,14 @@
   
   <url>
     <loc>http://roseweixel.github.io/blog/archives/</loc>
-    <lastmod>2014-11-20T23:31:22-05:00</lastmod>
+    <lastmod>2014-12-05T00:36:06-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://roseweixel.github.io/</loc>
-    <lastmod>2014-11-20T23:31:22-05:00</lastmod>
+    <lastmod>2014-12-05T00:36:06-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

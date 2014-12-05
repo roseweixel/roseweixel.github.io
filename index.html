@@ -9,7 +9,7 @@
   <meta name="author" content="Rose Weixel">
 
   
-  <meta name="description" content="We&rsquo;re nearing the end of the amazing whirlwind that is week eight at The Flatiron School. We&rsquo;ve bid farewell (at least for now) to &hellip;">
+  <meta name="description" content="This post will not be about how I&rsquo;ve spent the last ten weeks at The Flatiron School making awesome friends while coding together, or about my &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,349 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/04/making-friends-with-code/">Making Friends (With Code)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-04T23:01:41-05:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:01 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post will not be about how I&rsquo;ve spent the last ten weeks at <a href="http://flatironschool.com/">The Flatiron School</a> making awesome friends while coding together, or about my process of becoming friends with code. Those are posts for another time. This one is about the kinds of friendships that are actually built with code, the kind you can persist in a database.</p>
+
+<p>Over the course of working on my two most recent projects, I&rsquo;ve discovered that there is more than one way to make a friendship happen on the backend of a Rails app (or most likely any app). My first crack at making friendships was for a <a href="https://lacquer-love-and-lend.herokuapp.com/">nail polish sharing app</a> where friends can view each other&rsquo;s collections and ask to borrow from each other. I watched Treehouse&rsquo;s tutorial on <a href="http://teamtreehouse.com/library/building-social-features-in-ruby-on-rails">building social features in Ruby on Rails</a>, which is a good place to start if you&rsquo;ve never done something like this before. Although it helped me understand it somewhat, the way it was done in the tutorial still seemed pretty complicated to me so I decided to try to figure it out on my own so I could break it down and understand it.</p>
+
+<p>Here are the basic back-end requirements for creating a friendship (clearly some buttons and forms on the front-end are needed, but those are implementation details, so I&rsquo;ll leave them out of this post):</p>
+
+<ul>
+<li><p>You have to teach your models that some Users have relationships with other Users (a self-referential association).</p></li>
+<li><p>You have to store that relationship in the database so that both sides of the relationship have knowledge of it and access to it.</p></li>
+<li><p>You have to have a way of representing and keeping track of the state of the relationship at any given time (requested, accepted, etc.)</p></li>
+</ul>
+
+
+<p>Here&rsquo;s how I did it in my first go-around:</p>
+
+<p>1) I created a join table, <code>friendships</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateFriendships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:friendships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:user_id</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:friend_id</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="c1"># it&#39;s a good idea to add an index for faster look-ups in the database</span>
+</span><span class='line'>    <span class="n">add_index</span> <span class="ss">:friendships</span><span class="p">,</span> <span class="o">[</span><span class="ss">:user_id</span><span class="p">,</span> <span class="ss">:friend_id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2) In the model for Friendship, I taught it that Friends are really just other users:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Friendship</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:user</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:friend</span><span class="p">,</span> <span class="ss">class_name</span><span class="p">:</span> <span class="s1">&#39;User&#39;</span><span class="p">,</span> <span class="ss">foreign_key</span><span class="p">:</span> <span class="s1">&#39;friend_id&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validate</span> <span class="ss">:is_not_duplicate</span><span class="p">,</span> <span class="ss">:on</span> <span class="o">=&gt;</span> <span class="ss">:create</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">is_not_duplicate</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">!</span><span class="p">(</span><span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:friend_id</span> <span class="o">=&gt;</span> <span class="n">friend_id</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">empty?</span> <span class="o">&amp;&amp;</span> <span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="n">friend_id</span><span class="p">,</span> <span class="ss">:friend_id</span> <span class="o">=&gt;</span> <span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">empty?</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:friendship</span><span class="p">,</span> <span class="s2">&quot;This friendship already exists!&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see from the above, I decided I didn&rsquo;t want to allow &ldquo;duplicates&rdquo; of friendships in the database, but as it turns out there are reasons why you might not want to do it this way. I&rsquo;ll go into that later.</p>
+
+<p>3) I made the User model aware of the Friendship model:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:friendships</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:friends</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:friendships</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">uniqueness</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">accepted_friends</span>
+</span><span class='line'>    <span class="n">accepted_friends</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="s1">&#39;accepted&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friendship</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">accepted_friends</span> <span class="o">&lt;&lt;</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">friendship</span><span class="o">.</span><span class="n">friend_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">friend_id</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="s1">&#39;accepted&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friendship</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">accepted_friends</span> <span class="o">&lt;&lt;</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">friendship</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">accepted_friends</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">requested_friends_awaiting_approval</span>
+</span><span class='line'>    <span class="n">pending_friends</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friendship</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">pending_friends</span> <span class="o">&lt;&lt;</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">friendship</span><span class="o">.</span><span class="n">friend_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">pending_friends</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">friendships_for_your_approval</span>
+</span><span class='line'>    <span class="n">pending_friendships</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">friend_id</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friendship</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">pending_friendships</span> <span class="o">&lt;&lt;</span> <span class="n">friendship</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">pending_friendships</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">friends_for_your_approval</span>
+</span><span class='line'>    <span class="n">pending_friends</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="no">Friendship</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">friend_id</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friendship</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">friend</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">friendship</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">pending_friends</span> <span class="o">&lt;&lt;</span> <span class="n">friend</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">pending_friends</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">all_friends</span>
+</span><span class='line'>    <span class="n">accepted_friends</span> <span class="o">+</span> <span class="n">requested_friends_awaiting_approval</span> <span class="o">+</span> <span class="n">friends_for_your_approval</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&rsquo;ll notice that I wrote a whole bunch of methods to tell Users how to find their friends on both sides of the relationship. I wanted to give users custom notifications in the views depending on whether they had a pending request or a request awaiting their approval, which was part of the reason for this. But even if I hadn&rsquo;t wanted to do that, I would have at least needed some kind of setup like this that makes multiple hits to the database every time someone wants to see all of their friends.</p>
+
+<p>4) Finally, <code>state</code> is a big part of this model. I set it up so a friendship could have a state of <code>pending</code> or <code>accepted</code> (similar methods would create other states, like <code>rejected</code>). This is where the friendships controller comes in. For the sake of brevity, I&rsquo;ll just describe the <code>create</code> and <code>update</code> methods:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">FriendshipsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">current_user</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:friendship</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:friendship</span><span class="o">].</span><span class="n">has_key?</span><span class="p">(</span><span class="ss">:friend_id</span><span class="p">)</span>
+</span><span class='line'>      <span class="vi">@friend</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:friendship</span><span class="o">][</span><span class="ss">:friend_id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>      <span class="vi">@friendship</span> <span class="o">=</span> <span class="no">Friendship</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">friend</span><span class="p">:</span> <span class="vi">@friend</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="vi">@user</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="vi">@friendship</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your friendship with </span><span class="si">#{</span><span class="vi">@friend</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is pending.&quot;</span>
+</span><span class='line'>      <span class="n">redirect_to</span><span class="p">(</span><span class="ss">:back</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Friend required&quot;</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">root_path</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>    <span class="vi">@friendship</span> <span class="o">=</span> <span class="no">Friendship</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@friendship</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="ss">state</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:state</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">redirect_to</span><span class="p">(</span><span class="ss">:back</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since I&rsquo;ve made a column in the friendships table for <code>state</code>, I can set and update the value of that attribute so a Friendship can introspect on the state it is currently in (what if we could write a method for doing this in real life?).</p>
+
+<p>I set the <code>state</code> of the friendship to <code>'pending'</code> whenever it first gets created. Then, when the User who was &ldquo;friended&rdquo; decides to hit the &lsquo;Accept&rsquo; button (or the &lsquo;Reject&rsquo; button as the case may be), the friendship can get updated accordingly.</p>
+
+<p>So, although the implementation of friendships I ended up with in my first attempt has the functionality I wanted, but as I mentioned before, it&rsquo;s not the most efficient. While my reasoning was that it is not desireable to have two rows in the friendships join table for every relationship that gets created, this reasoning did not take into account the way databases work. Because I have to query twice (Who are the people I&rsquo;ve friended? Who are the people who have friended me?) every single time I want to access my friends, this is actually unneccesarily expensive. Since rows in a database are cheap, why worry about adding an extra row if it reduces the number of times you need to hit the database?</p>
+
+<p>I got a second crack at this problem during my current project, an app for teachers that includes functionality for generating seating charts according to who works well together and who doesn&rsquo;t. Along with my teammates, we built Buddyships (and Enemyships, too!) in a more reciprocal way:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Enemyship</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:student</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:enemy</span><span class="p">,</span> <span class="ss">class_name</span><span class="p">:</span> <span class="s1">&#39;Student&#39;</span><span class="p">,</span> <span class="ss">foreign_key</span><span class="p">:</span> <span class="s1">&#39;enemy_id&#39;</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:course_section</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:inversify</span>
+</span><span class='line'>  <span class="n">after_destroy</span> <span class="ss">:destroy_inverse</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validates_uniqueness_of</span> <span class="ss">:student</span><span class="p">,</span> <span class="ss">:scope</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:enemy</span><span class="p">,</span> <span class="ss">:course_section_id</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">validates_uniqueness_of</span> <span class="ss">:enemy</span><span class="p">,</span> <span class="ss">:scope</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:student</span><span class="p">,</span> <span class="ss">:course_section_id</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validate</span> <span class="ss">:cant_be_own_enemy</span><span class="p">,</span> <span class="ss">:cant_be_buddies_and_enemies</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">inversify</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">enemy</span><span class="o">.</span><span class="n">enemyships</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:course_section_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">course_section_id</span><span class="p">,</span> <span class="ss">:enemy_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">destroy_inverse</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">inverse</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">enemy</span><span class="o">.</span><span class="n">enemyships</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:enemy_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">:course_section_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">course_section_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>      <span class="n">inverse</span><span class="o">.</span><span class="n">destroy</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cant_be_own_enemy</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">student_id</span> <span class="o">==</span> <span class="n">enemy_id</span>
+</span><span class='line'>      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:enemy_id</span><span class="p">,</span> <span class="s2">&quot;you can&#39;t be your own enemy! :(&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cant_be_buddies_and_enemies</span>
+</span><span class='line'>    <span class="k">if</span> <span class="no">Buddyship</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">student_id</span><span class="p">:</span> <span class="n">student_id</span><span class="p">,</span> <span class="ss">buddy_id</span><span class="p">:</span> <span class="n">enemy_id</span><span class="p">,</span> <span class="ss">course_section_id</span><span class="p">:</span> <span class="n">course_section_id</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:enemy_id</span><span class="p">,</span> <span class="s2">&quot;you can&#39;t be both buddies and enemies for the same class! :(&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this implementation, two rows in the join table are created for each relationship, in a method aptly called <code>inversify</code>.</p>
+
+<p>Because of the reciprocal nature of the relationship created in this model, one database query (<code>student.enemyships</code>) is all it takes to find all potential Enemies.</p>
+
+<p>So, while one-way relationships are fine for a follower-followee type of relationship, if you want to create a reciprocal relationship in your next app, don&rsquo;t shy away from those extra rows in the database.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
