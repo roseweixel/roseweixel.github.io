@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-02-14T01:17:13-05:00</updated>
+  <updated>2015-02-14T01:42:30-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -12,6 +12,98 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reading and Writing to Instance Variables in Ruby: Self., @, or Nothing?]]></title>
+    <link href="http://roseweixel.github.io/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-Nothing/"/>
+    <updated>2015-02-13T14:03:10-05:00</updated>
+    <id>http://roseweixel.github.io/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-Nothing</id>
+    <content type="html"><![CDATA[<p>Today marked the end of my second week as an instructor at The Flatiron School, where I graduated just about two months ago. While working with a student this morning, I realized I had been taking for granted a piece of knowledge that I learned in week two of my own semester.</p>
+
+<p>When I first was learning about object orientation, one of the most confounding things for me was when to use @, self., or no prefix at all when dealing with instance variables in class definitions.</p>
+
+<p>After several conversations with classmates and instructors, I thought I had it all straightened out. My table mates and I even wrote an &lsquo;Instance Variable Manifesto&rsquo; to make sure we&rsquo;d retain this enlightenment for all time. Today, I was grappling with the issue once again. It&rsquo;s funny how learning to program doesn&rsquo;t always happen in a straight line. The experience reminded me not to take for granted things I &ldquo;know&rdquo;, and to savor the moments of re-learning.</p>
+
+<p>Here&rsquo;s the issue that led to my temporary existential crisis today (had I totally lost my grasp of object oriented programming, all knowledge of Ruby, and/or my mind entirely?):</p>
+
+<ul>
+<li>We have a class, <code>Shoe</code>.</li>
+<li>It has an attribute, <code>condition</code>, with an <code>attr_accessor</code>.</li>
+<li>It has a method, <code>cobble</code>, that sets a <code>Shoe</code>&rsquo;s condition to <code>"new"</code>.</li>
+<li>The Rspec test first made a new instance of <code>Shoe</code> and then set its condition to <code>"old"</code>. Then, it had the expectation that the <code>condition</code> of the shoe will be equal to <code>"new"</code> after calling the <code>cobble</code> method.</li>
+</ul>
+
+
+<p>This is the code my student had:</p>
+
+<pre><code class="ruby">class Shoe
+  attr_accessor :condition
+
+  def cobble
+    condition = "new"
+  end
+end
+</code></pre>
+
+<p>At first glance, the reason this code was not making the test pass eluded me. We put a <code>binding.pry</code> in the cobble method, and found that while <code>condition</code> was indeed set to <code>'new'</code>, the test was still failing. Wasn&rsquo;t <code>condition = "new"</code> just making a call to the <code>condition=</code> method provided by the attr_accessor? Apparently not.</p>
+
+<p>In fact, as I later re-realized, <code>condition = "new"</code> was creating a local variable, <code>condition</code> with the value <code>"new"</code>, which has nothing to do with the value of <code>@condition</code>. I was able to come back to understanding this concept when I recalled that I had grappled with this very same thing almost exactly four months ago, when I was working on the exact same lab. I searched through the notes I had taken during those early Flatiron days and found the &ldquo;manifesto.&rdquo;</p>
+
+<p>Four months later, here&rsquo;s my distilled version of it.</p>
+
+<ul>
+<li><p>Use <code>@</code> only in the initialize method or within a custom reader/writer method (this accesses the instance variable directly)</p></li>
+<li><p>If you intend to ever read or write to an instance variable, build the appropriate reader/writer methods or use <code>attr_accessor</code>, <code>attr_writer</code>, or <code>attr_reader</code> as you deem appropriate. This allows you to delegate getting and setting your instance variables to methods rather than having to manipulate the variable directly.</p></li>
+<li><p>When altering the value of an instance variable, use the writer method prefixed with <code>self.</code> <strong>Without giving the writer method an explicit receiver (<code>self</code>), the Ruby interpreter will assume you are setting a local variable rather than calling the writer method</strong> (this is what led to the bug in the code snippet above).</p></li>
+<li><p>When simply reading the value of an instance variable, the reader method may be called with no prefix. The receiver of the reader method is implicitly <code>self</code>.</p></li>
+</ul>
+
+
+<p>Here&rsquo;s a code example to demonstrate usage of the previous guidelines:</p>
+
+<pre><code class="ruby">class Shoe
+  attr_accessor :condition
+
+  # we're initializing the attribute @condition, so we need to call the instance variable directly
+  def initialize(condition="new")
+    @condition = condition
+  end
+
+  # we're changing the value of @condition, so we call the writer method, which needs to be called on self or else Ruby thinks we're just setting a local variable
+  def wear
+    self.condition = "worn"
+  end
+
+  def cobble
+    self.condition = "new"
+  end
+
+  # we're just reading the value of @condition, so we can call the reader method (whose implicit receiver is self)
+  def report_condition
+    if condition == "new"
+      "This shoe is in perfect condition!"
+    elsif condition == "worn"
+      "This shoe needs to be cobbled!"
+    else
+      "The condition of this shoe is #{condition}."
+    end
+  end
+
+end
+</code></pre>
+
+<p>Note that you can also use <code>self.</code> when calling reader methods, and it sometimes feels semantically more natural to do so. Unlike using <code>@</code>, this still delegates responsibility to the reader method, exactly the same as calling the reader method with no <code>self.</code> prefix.</p>
+
+<p>TL;DR</p>
+
+<ul>
+<li><p>Use <code>@</code> in the initialize or reader/writer methods.</p></li>
+<li><p>It&rsquo;s better to delegate to reader and writer methods rather than accessing instance variables directly.</p></li>
+<li><p>You cannot call a writer method without the explicit receiver, <code>self</code>. When Ruby sees the <code>=</code> (or <code>-=</code>, or <code>+=</code>), it assumes you are setting a local variable if no receiver is specified.</p></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript: The Honey Badger of Programming Languages]]></title>
@@ -672,54 +764,6 @@ end
 <p>Sure, it may not be as cute and little as our one-line method, but it will never break and it&rsquo;s still a lot prettier than loops inside loops.</p>
 
 <p>So when you are searching for that <em>one</em> thing you need inside of some nasty nesting, just <code>find</code> it!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[cheese.slice]]></title>
-    <link href="http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice/"/>
-    <updated>2014-10-07T22:07:16-04:00</updated>
-    <id>http://roseweixel.github.io/blog/2014/10/07/cheese-dot-slice</id>
-    <content type="html"><![CDATA[<p>When learning a programming language as natural as Ruby, the syntax inevitably seeps into our thoughts and alters the way we conceptualize everything from the complex to the mundane. Thus, the title of this blog (and, indeed, this post).</p>
-
-<p>It is easy for this to happen, in part because Ruby has such an extensive library of methods whose names and behaviors make them ideal for modeling real life. One such method is <code>slice</code>.</p>
-
-<p>The method <code>slice</code> can be called on an array (or an object that acts like an array, like a string). It literally returns a &ldquo;slice&rdquo; of the object on which it is called. The original object is left intact.</p>
-
-<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
-&gt; my_slices = cheese.slice(1, 2)
-=&gt; ["muenster", "provolone"] 
-&gt; cheese
-=&gt; ["gouda", "muenster", "provolone", "manchego", "brie"]
-</code></pre>
-
-<p>If you need to take more drastic measures, <code>slice!</code> will modify the original object, removing (and returning) everything you sliced out.</p>
-
-<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
-&gt; my_slices = cheese.slice!(1, 2)
-=&gt; ["muenster", "provolone"] 
-&gt; cheese
-=&gt; ["gouda", "manchego", "brie"]
-</code></pre>
-
-<p>Here are three different ways to use <code>slice</code> (<code>slice!</code> can also be invoked in these ways, and both can be used with arrays and strings):</p>
-
-<ul>
-<li><p><code>array.slice(index)</code> returns the object at <code>array[index]</code>, or <code>nil</code> if there is no object there to return.</p></li>
-<li><p><code>array.slice(start, length)</code> returns a new array containing the elements of <code>array</code> starting at <code>start</code> and continuing for <code>length</code> elements (as shown in the code examples above). If there are no objects there, it returns <code>nil</code>.<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p></li>
-<li><p><code>array.slice(range)</code> returns a new array containing the objects at <code>array[range]</code>, or <code>nil</code>.</p></li>
-</ul>
-
-
-<p>  For more on this and other Ruby Array methods, see the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.</p>
-<div class="footnotes">
-<hr/>
-<ol>
-<li id="fn:1">
-<p>There are some special cases that return an empty array. See the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
-</ol>
-</div>
-
 ]]></content>
   </entry>
   
