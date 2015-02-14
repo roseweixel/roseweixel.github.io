@@ -9,7 +9,7 @@
   <meta name="author" content="Rose Weixel">
 
   
-  <meta name="description" content="This post will not be about how I&rsquo;ve spent the last ten weeks at The Flatiron School making awesome friends while coding together, or about my &hellip;">
+  <meta name="description" content="Today marked the end of my second week as an instructor at The Flatiron School, where I graduated just about two months ago. While working with a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,156 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-nothing%3F/">Reading and Writing to Instance Variables in Ruby: Self., @, or Nothing?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-13T00:00:00-05:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Today marked the end of my second week as an instructor at The Flatiron School, where I graduated just about two months ago. While working with a student this morning, I realized I had been taking for granted a piece of knowledge that I learned in week two of my own semester.</p>
+
+<p>When I first was learning about object orientation, one of the most confounding things for me was when to use @, self., or no prefix at all when dealing with instance variables in class definitions.</p>
+
+<p>After several conversations with classmates and instructors, I thought I had it all straightened out. My table mates and I even wrote an &lsquo;Instance Variable Manifesto&rsquo; to make sure we&rsquo;d retain this enlightenment for all time. Today, I was grappling with the issue once again. It&rsquo;s funny how learning to program doesn&rsquo;t always happen in a straight line. The experience reminded me not to take for granted things I &ldquo;know&rdquo;, and to savor the moments of re-learning.</p>
+
+<p>Here&rsquo;s the issue that led to my temporary existential crisis today (had I totally lost my grasp of object oriented programming, all knowledge of Ruby, and/or my mind entirely?):</p>
+
+<ul>
+<li>We have a class, <code>Shoe</code>.</li>
+<li>It has an attribute, <code>condition</code>, with an <code>attr_accessor</code>.</li>
+<li>It has a method, <code>cobble</code>, that sets a <code>Shoe</code>&rsquo;s condition to <code>"new"</code>.</li>
+<li>The Rspec test first made a new instance of <code>Shoe</code> and then set its condition to <code>"old"</code>. Then, it had the expectation that the <code>condition</code> of the shoe will be equal to <code>"new"</code> after calling the <code>cobble</code> method.</li>
+</ul>
+
+
+<p>This is the code my student had:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Shoe</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:condition</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cobble</span>
+</span><span class='line'>    <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;new&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At first glance, the reason this code was not making the test pass eluded me. We put a <code>binding.pry</code> in the cobble method, and found that while <code>condition</code> was indeed set to <code>'new'</code>, the test was still failing. Wasn&rsquo;t <code>condition = "new"</code> just making a call to the <code>condition=</code> method provided by the attr_accessor? Apparently not.</p>
+
+<p>In fact, as I later re-realized, <code>condition = "new"</code> was creating a local variable, <code>condition</code> with the value <code>"new"</code>, which has nothing to do with the value of <code>@condition</code>. I was able to come back to understanding this concept when I recalled that I had grappled with this very same thing almost exactly four months ago, when I was working on the exact same lab. I searched through the notes I had taken during those early Flatiron days and found the &ldquo;manifesto.&rdquo;</p>
+
+<p>Four months later, here&rsquo;s my distilled version of it.</p>
+
+<ul>
+<li><p>Use <code>@</code> only in the initialize method or within a custom reader/writer method (this accesses the instance variable directly)</p></li>
+<li><p>If you intend to ever read or write to an instance variable, build the appropriate reader/writer methods or use <code>attr_accessor</code>, <code>attr_writer</code>, or <code>attr_reader</code> as you deem appropriate. This allows you to delegate getting and setting your instance variables to methods rather than having to manipulate the variable directly.</p></li>
+<li><p>When altering the value of an instance variable, use the writer method prefixed with <code>self.</code> <strong>Without giving the writer method an explicit receiver (<code>self</code>), the Ruby interpreter will assume you are setting a local variable rather than calling the writer method</strong> (this is what led to the bug in the code snippet above).</p></li>
+<li><p>When simply reading the value of an instance variable, the reader method may be called with no prefix. The receiver of the reader method is implicitly <code>self</code>.</p></li>
+</ul>
+
+
+<p>Here&rsquo;s a code example to demonstrate usage of the previous guidelines:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Shoe</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:condition</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># we&#39;re initializing the attribute @condition, so we need to call the instance variable directly</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;new&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@condition</span> <span class="o">=</span> <span class="n">condition</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># we&#39;re changing the value of @condition, so we call the writer method, which needs to be called on self or else Ruby thinks we&#39;re just setting a local variable</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">wear</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;worn&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cobble</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;new&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># we&#39;re just reading the value of @condition, so we can call the reader method (whose implicit receiver is self)</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">report_condition</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;new&quot;</span>
+</span><span class='line'>      <span class="s2">&quot;This shoe is in perfect condition!&quot;</span>
+</span><span class='line'>    <span class="k">elsif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;worn&quot;</span>
+</span><span class='line'>      <span class="s2">&quot;This shoe needs to be cobbled!&quot;</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="s2">&quot;The condition of this shoe is </span><span class="si">#{</span><span class="n">condition</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note that you can also use <code>self.</code> when calling reader methods, and it sometimes feels semantically more natural to do so. Unlike using <code>@</code>, this still delegates responsibility to the reader method, exactly the same as calling the reader method with no <code>self.</code> prefix.</p>
+
+<p>TL;DR</p>
+
+<ul>
+<li><p>Use <code>@</code> in the initialize or reader/writer methods.</p></li>
+<li><p>It&rsquo;s better to delegate to reader and writer methods rather than accessing instance variables directly.</p></li>
+<li><p>You cannot call a writer method without the explicit receiver, <code>self</code>. When Ruby sees the <code>=</code> (or <code>-=</code>, or <code>+=</code>), it assumes you are setting a local variable if no receiver is specified.</p></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1677,7 +1827,7 @@ There is. It&rsquo;s a session! It becomes available to you as soon as you put t
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Rose Weixel -
+  Copyright &copy; 2015 - Rose Weixel -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
 </p>
 
