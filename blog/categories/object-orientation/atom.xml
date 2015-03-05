@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Object Orientation | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/object-orientation/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-02-14T01:42:30-05:00</updated>
+  <updated>2015-03-04T23:06:52-05:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Reading and Writing to Instance Variables in Ruby: Self., @, or Nothing?]]></title>
-    <link href="http://roseweixel.github.io/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-Nothing/"/>
+    <link href="http://roseweixel.github.io/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-Nothing%3F/"/>
     <updated>2015-02-13T14:03:10-05:00</updated>
-    <id>http://roseweixel.github.io/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-Nothing</id>
+    <id>http://roseweixel.github.io/blog/2015/02/13/reading-and-writing-to-instance-variables-in-ruby:-self.,-@,-or-Nothing?</id>
     <content type="html"><![CDATA[<p>Today marked the end of my second week as an instructor at The Flatiron School, where I graduated just about two months ago. While working with a student this morning, I realized I had been taking for granted a piece of knowledge that I learned in week two of my own semester.</p>
 
 <p>When I first was learning about object orientation, one of the most confounding things for me was when to use @, self., or no prefix at all when dealing with instance variables in class definitions.</p>
