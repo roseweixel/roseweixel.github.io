@@ -3,7 +3,7 @@ layout: post
 title: "JavaScript: The Honey Badger of Programming Languages"
 date: 2014-11-15 17:49:20 -0500
 comments: true
-categories: ['JavaScript', 'Ruby', 'scope', 'object-oriented programming', 'arity', 'Flatiron School']
+categories: ['JavaScript', 'Ruby', 'scope', 'object orientation', 'arity', 'Flatiron School']
 ---
 
 After spending six weeks in Ruby land, last week was all JavaScript all the time at [The Flatiron School](http://www.flatironschool.com). I feel like I've just added a hammer with superpowers to my programming tool box. You might bend a few nails along the way, but you can build almost anything with it. 
@@ -123,7 +123,7 @@ By using `var` within the function, we created an entirely different `dog` and d
 
 ## Arity Schmarity
 
-Before we go any further, I must admit that hadn't heard the word arity until I crossed paths with JavaScript. I reckon I'm not alone in this, so here's a definition, courtesy of [Wikipedia](http://en.wikipedia.org/wiki/Arity):
+Before we go any further, I must admit that hadn't heard the word arity until I crossed paths with JavaScript. I reckon I'm not alone in this, so here's a definition courtesy of [Wikipedia](http://en.wikipedia.org/wiki/Arity):
 
 > In logic, mathematics, and computer science, the **arity** of a function or operation is the number of arguments or operands the function or operation accepts.
 

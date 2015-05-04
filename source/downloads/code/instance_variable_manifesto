@@ -1,0 +1,12 @@
+prefixes for instance variables
+@	
+	- only in the initialize method
+
+self.	
+	- if you have an equals sign (=, +=, *=, -=, etc…) and you have made an attr_writer if you don’t have an attr_writer, don’t use self., because it will try to call a method that does not exist (in which case you should probably make an attr_writer, otherwise it seems you would have to use @!)
+
+nil	
+	- every other time!
+
+It’s always safe to use self.!
+
