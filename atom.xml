@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-04T22:40:04-04:00</updated>
+  <updated>2015-06-04T22:41:09-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -14,9 +14,9 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Live Updating Dom Elements With Jquery and Ajax]]></title>
+    <title type="html"><![CDATA[Live Updating DOM Elements With jQuery and Ajax]]></title>
     <link href="http://roseweixel.github.io/blog/2015/06/04/live-updating-dom-elements-with-jquery-and-ajax/"/>
-    <updated>2015-06-04T00:00:00-04:00</updated>
+    <updated>2015-06-04T21:20:11-04:00</updated>
     <id>http://roseweixel.github.io/blog/2015/06/04/live-updating-dom-elements-with-jquery-and-ajax</id>
     <content type="html"><![CDATA[<p>Any web app that involves real-time interactions between users requires some form of live notifications. Implementing this, for a beginner developer such as myself, can be a daunting challenge. This post will walk through how I went about solving this problem when working on <a href="http://www.lacquerlove.com">Lacquer Love&amp;Lend</a>, a social network for nail polish lovers that allows users to interact via friendships and lacquer loans. As with any social network, I wanted users to see live notifications whenever they received a new friendship or transaction request, or when the <code>state</code> of any of their friendships or transactions changed. The example that follows assumes some basic knowledge of Rails.</p>
 

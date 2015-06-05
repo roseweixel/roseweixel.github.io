@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ajax | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ajax/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-04T22:40:35-04:00</updated>
+  <updated>2015-06-04T22:41:09-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -24,7 +24,7 @@
 
 <p>In a basic Ajax request, a user clicks on something, the Ajax request gets sent, and a part of the DOM gets updated without the entire page reloading.</p>
 
-<p>{% img center /images/basic_ajax_request.png 830 830 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img class="center" src="/images/basic_ajax_request.png" width="830" height="830" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>The code usually looks something like this:</p>
 
