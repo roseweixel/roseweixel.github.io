@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ajax | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ajax/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-14T22:11:03-04:00</updated>
+  <updated>2015-06-14T22:17:08-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -77,7 +77,7 @@ $(document).ready(function() {
 end
 </code></pre>
 
-<p>3) Make the Ajax request to hit &lsquo;users#live_notifications&rsquo; every 3 seconds:</p>
+<p>3) Make the Ajax request to hit <code>users#live_notifications</code> every 3 seconds:</p>
 
 <pre><code class="javascript app/assets/javascripts/live_notifications.js">
 $(document).ready(function() {

@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-14T22:11:03-04:00</updated>
+  <updated>2015-06-14T22:17:08-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -111,7 +111,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>3) Make the Ajax request to hit &lsquo;users#live_notifications&rsquo; every 3 seconds:</p>
+<p>3) Make the Ajax request to hit <code>users#live_notifications</code> every 3 seconds:</p>
 
 <figure class='code'><figcaption><span>app/assets/javascripts/live_notifications.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
