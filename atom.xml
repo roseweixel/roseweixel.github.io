@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-04T22:41:09-04:00</updated>
+  <updated>2015-06-14T22:11:03-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -24,7 +24,7 @@
 
 <p>In a basic Ajax request, a user clicks on something, the Ajax request gets sent, and a part of the DOM gets updated without the entire page reloading.</p>
 
-<p><img class="center" src="http://roseweixel.github.io/images/basic_ajax_request.png" width="830" height="830" title="image" alt="images"></p>
+<p><img class="center" src="http://roseweixel.github.io/images/basic_ajax_request.png" width="600" height="600" title="image" alt="images"></p>
 
 <p>The code usually looks something like this:</p>
 
@@ -77,7 +77,272 @@
 
 <p>With the code above, a single user&rsquo;s action of submitting the form sets off the whole chain of events. But for live notifications, more than one user is involved and the action that changes one user&rsquo;s data is hapenning on another user&rsquo;s client! Making this happen twisted my brain into a pretzel at first, but after several attempts I got the functionality I wanted. A description of these follows below.</p>
 
-<p>To Be Continued&hellip;</p>
+<h2>Attempt #1: Refresh a Single Div Every 3 Seconds</h2>
+
+<p>In order to get a single part of the page to update without the entire page refreshing, I used a <code>setInterval()</code> function to make an Ajax request every 3 seconds. This would make a <code>GET</code> request to a custom route: <code>users/:id/live_notifications</code> that hit an action named <code>live_notifications</code> in the <code>UsersController</code>.</p>
+
+<p>1) Separate the &ldquo;live notifications&rdquo; div into a partial:</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/live_notifications_div.png" width="600" height="600" title="image" alt="images"></p>
+
+<p>2) Create a route and a controller action:</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">get</span> <span class="s1">&#39;users/:id/live_notifications&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;users#live_notifications&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/controllers/users_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">live_notifications</span>
+</span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>    <span class="nb">format</span><span class="o">.</span><span class="n">js</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3) Make the Ajax request to hit &lsquo;users#live_notifications&rsquo; every 3 seconds:</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/live_notifications.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">currentUrl</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Given that we&#39;re at a url like &#39;users/:id&#39;, this saves the unique id of the user whose show page we are currently looking at</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">userID</span> <span class="o">=</span> <span class="nx">currentUrl</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">currentUrl</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/users/&quot;</span> <span class="o">+</span> <span class="nx">userID</span> <span class="o">+</span> <span class="s2">&quot;/live_notifications&quot;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>4) Once this Ajax request hits the controller (which is set up to handle a JavaScript response in the <code>respond_to</code> block), Rails by default will look for <code>app/views/users/live_notifications.js.erb</code> and execute the following to refresh the partial:</p>
+
+<figure class='code'><figcaption><span>app/views/users/live_notifications.js.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#live-notifications&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&lt;%= j render &quot;live_notifications&quot;, user: @user %&gt;&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is all it took to refresh that single div every 3 seconds. However, it was far from ideal:</p>
+
+<ul>
+<li><p>Lots of refreshing for no reason (like when you&rsquo;re looking at another user&rsquo;s page and no notifications are displayed, or when nothing has changed)</p></li>
+<li><p>Things that never would change are part of the div that is being refreshed (like header text, for example)</p></li>
+<li><p>Last but not least, this kind of indescriminate refreshing breaks the functionality of forms&hellip;</p></li>
+</ul>
+
+
+<p><img class="center" src="http://roseweixel.github.io/images/form-refreshing-problems.gif" width="600" height="600" title="image" alt="images"></p>
+
+<h2>A Quick Fix for Form Problems</h2>
+
+<p>Thanks to jQuery pseudo selectors, we can stop the Ajax call from being made if an input field is currently focused:</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/live_notifications.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// prevent the Ajax call from being made if the input field in the live notifications div is focused</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#transaction_due_date&#39;</span><span class="p">).</span><span class="nx">is</span><span class="p">(</span><span class="s2">&quot;:focus&quot;</span><span class="p">)){</span>
+</span><span class='line'>            <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>                <span class="p">...</span>
+</span><span class='line'>            <span class="p">});</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Getting More Specific</h2>
+
+<p>The next logical step up from the &ldquo;refresh everything all the time&rdquo; strategy was to refresh the live notifications div only when looking at one&rsquo;s own show page (in other words, when the user id in the url matches the id of the current user stored in the session).</p>
+
+<p>In order to make the <code>current_user</code> from the Rails backend available to JavaScript, I put the following in my application layout:</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">currentUser</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">id</span> <span class="o">:</span> <span class="s2">&quot;&lt;%= current_user.id if current_user %&gt;&quot;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With <code>current_user.id</code> stored in an object attached to the window, making sure the Ajax call only gets made when a user is looking at his/her own profile page is simple:</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/live_notifications.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">currentUrl</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">userID</span> <span class="o">=</span> <span class="nx">currentUrl</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">currentUrl</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">currentUrl</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">&#39;/users/&#39;</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nx">currentUser</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">...</span>
+</span><span class='line'>        <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The Final Refactor: Only Refresh When things Have Changed</h2>
+
+<p>To change only things that have changed, when they have changed, the ability to compare what&rsquo;s on the back end with what&rsquo;s on the front end is needed.</p>
+
+<p>For this part, I needed to capture the state of all of a user&rsquo;s transactions and friendships (the two things for which there may be a notification), and hide this information on the page. I created a method in the <code>User</code> model that returns all of these states in an array, and put this into a hidden element on the page:</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/hidden-tracker.png" width="600" height="600" title="image" alt="images"></p>
+
+<p>Since the transactions could also have due dates, I did something similar for those.</p>
+
+<p>The next step was to change the code in <code>app/views/users/live_notifications.js.erb</code> to check the current state of the user&rsquo;s transactions and friendships and see if the <code>#all-categories-tracker</code> is up to date:</p>
+
+<figure class='code'><figcaption><span>app/views/users/live_notifications.js.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">previousInteractionStates</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#all-categories-tracker&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">();</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">currentInteractionStates</span> <span class="o">=</span> <span class="s2">&quot;&lt;%= @user.transactions_and_friendships_data_array %&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">countOrStatusChanged</span> <span class="o">=</span> <span class="nx">previousInteractionStates</span> <span class="o">!==</span> <span class="nx">currentInteractionStates</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">previousDueDates</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.due-date&quot;</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">$</span><span class="p">(</span><span class="nx">val</span><span class="p">).</span><span class="nx">text</span><span class="p">()</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">currentDueDates</span> <span class="o">=</span> <span class="s2">&quot;&lt;%= @user.due_date_list %&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">dueDatesChanged</span> <span class="o">=</span> <span class="nx">currentDueDates</span> <span class="o">!==</span> <span class="nx">previousDueDates</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">countOrStatusChanged</span> <span class="o">||</span> <span class="nx">dueDatesChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// UPDATE THE “MASTER TRACKER”</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#all-categories-tracker&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">currentInteractionStates</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// CHECK EACH INDIVIDUAL CATEGORY AND CHANGE ONLY WHAT’S NEEDED</span>
+</span><span class='line'>    <span class="o">&lt;%</span> <span class="nx">notification_categories</span><span class="p">.</span><span class="nx">each</span> <span class="k">do</span> <span class="o">|</span><span class="nx">category</span><span class="o">|</span> <span class="o">%&gt;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">currentCategory</span> <span class="o">=</span> <span class="s2">&quot;&lt;%= category %&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// DEAL WITH ANY CHANGES IN COUNT OR STATE</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">currentCategoryStates</span>  <span class="o">=</span> <span class="s2">&quot;&lt;%= @user.states(category) %&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">previousCategoryStates</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.category-tracker#&quot;</span> <span class="o">+</span> <span class="nx">currentCategory</span><span class="p">).</span><span class="nx">html</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// if there&#39;s been a change for this category</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">currentCategoryStates</span> <span class="o">!==</span> <span class="nx">previousCategoryStates</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// Update the DOM accordingly</span>
+</span><span class='line'>             <span class="err">…</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// DEAL WITH CHANGED DUE DATES FOR TRANSACTIONS</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">currentCategory</span> <span class="o">===</span> <span class="s1">&#39;active_requested_transactions&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">dueDatesChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// Update the DOM accordingly</span>
+</span><span class='line'>              <span class="err">…</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="o">&lt;%</span> <span class="nx">end</span> <span class="o">%&gt;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With this final refactoring, checks are in place that stop the unnecessary refreshing that came with the first version:</p>
+
+<p><img class="center" src="http://roseweixel.github.io/images/live-notifications-flow.png" width="600" height="600" title="image" alt="images"></p>
+
+<h2>Alternatives</h2>
+
+<p>The method I described above for achieving live notifications is very basic Ajax polling. Every serveral seconds, a request/response cycle fires. This inevitably means lots of database querying, even if the amount of refreshing can be reduced to a minimum. In my search for ways to reduce the burden this puts on the database, here are some other techniques I&rsquo;ve found that may offer some advantages:</p>
+
+<p>1) Long Polling</p>
+
+<p>With this technique, a request fires and waits for a change before sending a response. Then another request can be fired.</p>
+
+<p>2) Web Sockets</p>
+
+<p>Very different than Ajax polling or long polling, web sockets are used for continuous communication between server and client.</p>
+
+<p>3) Server-Sent Events</p>
+
+<p>Unlike web sockets which allows for continuous back and forth from server to client, this technique establishes a persistent connection that allows the server to send data to the client, but not the other way around.</p>
 ]]></content>
   </entry>
   

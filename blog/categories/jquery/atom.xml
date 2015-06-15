@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Jquery | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/jquery/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-04T22:41:09-04:00</updated>
+  <updated>2015-06-14T22:11:03-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -24,7 +24,7 @@
 
 <p>In a basic Ajax request, a user clicks on something, the Ajax request gets sent, and a part of the DOM gets updated without the entire page reloading.</p>
 
-<p><img class="center" src="/images/basic_ajax_request.png" width="830" height="830" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p><img class="center" src="/images/basic_ajax_request.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>The code usually looks something like this:</p>
 
@@ -55,7 +55,183 @@ $(document).ready(function() {
 
 <p>With the code above, a single user&rsquo;s action of submitting the form sets off the whole chain of events. But for live notifications, more than one user is involved and the action that changes one user&rsquo;s data is hapenning on another user&rsquo;s client! Making this happen twisted my brain into a pretzel at first, but after several attempts I got the functionality I wanted. A description of these follows below.</p>
 
-<p>To Be Continued&hellip;</p>
+<h2>Attempt #1: Refresh a Single Div Every 3 Seconds</h2>
+
+<p>In order to get a single part of the page to update without the entire page refreshing, I used a <code>setInterval()</code> function to make an Ajax request every 3 seconds. This would make a <code>GET</code> request to a custom route: <code>users/:id/live_notifications</code> that hit an action named <code>live_notifications</code> in the <code>UsersController</code>.</p>
+
+<p>1) Separate the &ldquo;live notifications&rdquo; div into a partial:</p>
+
+<p><img class="center" src="/images/live_notifications_div.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p>2) Create a route and a controller action:</p>
+
+<pre><code class="ruby config/routes.rb">get 'users/:id/live_notifications' =&gt; 'users#live_notifications'
+</code></pre>
+
+<pre><code class="ruby app/controllers/users_controller.rb">def live_notifications
+  @user = User.find(params[:id])
+
+  respond_to do |format|
+    format.js
+  end
+end
+</code></pre>
+
+<p>3) Make the Ajax request to hit &lsquo;users#live_notifications&rsquo; every 3 seconds:</p>
+
+<pre><code class="javascript app/assets/javascripts/live_notifications.js">
+$(document).ready(function() {
+    var currentUrl = window.location.href;
+
+    // Given that we're at a url like 'users/:id', this saves the unique id of the user whose show page we are currently looking at
+    var userID = currentUrl.substr(currentUrl.lastIndexOf('/') + 1);
+
+    setInterval(function() {
+        $.ajax({
+            type: "GET",
+            url: "/users/" + userID + "/live_notifications"
+        });
+    }, 3000); 
+});
+</code></pre>
+
+<p>4) Once this Ajax request hits the controller (which is set up to handle a JavaScript response in the <code>respond_to</code> block), Rails by default will look for <code>app/views/users/live_notifications.js.erb</code> and execute the following to refresh the partial:</p>
+
+<pre><code class="javascript app/views/users/live_notifications.js.erb">$("#live-notifications").html('&lt;%= j render "live_notifications", user: @user %&gt;');
+</code></pre>
+
+<p>This is all it took to refresh that single div every 3 seconds. However, it was far from ideal:</p>
+
+<ul>
+<li><p>Lots of refreshing for no reason (like when you&rsquo;re looking at another user&rsquo;s page and no notifications are displayed, or when nothing has changed)</p></li>
+<li><p>Things that never would change are part of the div that is being refreshed (like header text, for example)</p></li>
+<li><p>Last but not least, this kind of indescriminate refreshing breaks the functionality of forms&hellip;</p></li>
+</ul>
+
+
+<p><img class="center" src="/images/form-refreshing-problems.gif" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<h2>A Quick Fix for Form Problems</h2>
+
+<p>Thanks to jQuery pseudo selectors, we can stop the Ajax call from being made if an input field is currently focused:</p>
+
+<pre><code class="javascript app/assets/javascripts/live_notifications.js">$(document).ready(function() {
+    ...
+
+    setInterval(function() {
+        // prevent the Ajax call from being made if the input field in the live notifications div is focused
+        if (!$('#transaction_due_date').is(":focus")){
+            $.ajax({
+                ...
+            });
+        }
+    }, 3000); 
+});
+</code></pre>
+
+<h2>Getting More Specific</h2>
+
+<p>The next logical step up from the &ldquo;refresh everything all the time&rdquo; strategy was to refresh the live notifications div only when looking at one&rsquo;s own show page (in other words, when the user id in the url matches the id of the current user stored in the session).</p>
+
+<p>In order to make the <code>current_user</code> from the Rails backend available to JavaScript, I put the following in my application layout:</p>
+
+<p>&#8220;`html app/views/layouts/application.html.erb</p>
+
+<script type="text/javascript">
+  window.currentUser = {
+      id : "<%= current_user.id if current_user %>"
+  }
+</script>
+
+
+<pre><code>
+With `current_user.id` stored in an object attached to the window, making sure the Ajax call only gets made when a user is looking at his/her own profile page is simple:
+</code></pre>
+
+<p>$(document).ready(function() {
+    var currentUrl = window.location.href;
+    var userID = currentUrl.substr(currentUrl.lastIndexOf(&lsquo;/&rsquo;) + 1);</p>
+
+<pre><code>if (currentUrl.endsWith('/users/' + window.currentUser.id)) {
+    setInterval(function() {
+        ...
+    }, 3000); 
+}
+</code></pre>
+
+<p>});
+&#8220;`</p>
+
+<h2>The Final Refactor: Only Refresh When things Have Changed</h2>
+
+<p>To change only things that have changed, when they have changed, the ability to compare what&rsquo;s on the back end with what&rsquo;s on the front end is needed.</p>
+
+<p>For this part, I needed to capture the state of all of a user&rsquo;s transactions and friendships (the two things for which there may be a notification), and hide this information on the page. I created a method in the <code>User</code> model that returns all of these states in an array, and put this into a hidden element on the page:</p>
+
+<p><img class="center" src="/images/hidden-tracker.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p>Since the transactions could also have due dates, I did something similar for those.</p>
+
+<p>The next step was to change the code in <code>app/views/users/live_notifications.js.erb</code> to check the current state of the user&rsquo;s transactions and friendships and see if the <code>#all-categories-tracker</code> is up to date:</p>
+
+<pre><code class="javascript app/views/users/live_notifications.js.erb">var previousInteractionStates = $('#all-categories-tracker').text();
+var currentInteractionStates = "&lt;%= @user.transactions_and_friendships_data_array %&gt;";
+
+var countOrStatusChanged = previousInteractionStates !== currentInteractionStates;
+
+var previousDueDates = $.map($(".due-date"), function(val) {
+  return $(val).text()
+});
+var currentDueDates = "&lt;%= @user.due_date_list %&gt;";
+
+var dueDatesChanged = currentDueDates !== previousDueDates.toString();
+
+if (countOrStatusChanged || dueDatesChanged) {
+    // UPDATE THE “MASTER TRACKER”
+    $('#all-categories-tracker').html(currentInteractionStates);
+
+    // CHECK EACH INDIVIDUAL CATEGORY AND CHANGE ONLY WHAT’S NEEDED
+    &lt;% notification_categories.each do |category| %&gt;
+        var currentCategory = "&lt;%= category %&gt;";
+
+        // DEAL WITH ANY CHANGES IN COUNT OR STATE
+        var currentCategoryStates  = "&lt;%= @user.states(category) %&gt;";
+        var previousCategoryStates = $(".category-tracker#" + currentCategory).html();
+
+        // if there's been a change for this category
+        if (currentCategoryStates !== previousCategoryStates) {
+            // Update the DOM accordingly
+             …
+        }
+
+        // DEAL WITH CHANGED DUE DATES FOR TRANSACTIONS
+        if (currentCategory === 'active_requested_transactions' &amp;&amp; dueDatesChanged) {
+            // Update the DOM accordingly
+              …
+        }        
+    &lt;% end %&gt;
+}
+</code></pre>
+
+<p>With this final refactoring, checks are in place that stop the unnecessary refreshing that came with the first version:</p>
+
+<p><img class="center" src="/images/live-notifications-flow.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<h2>Alternatives</h2>
+
+<p>The method I described above for achieving live notifications is very basic Ajax polling. Every serveral seconds, a request/response cycle fires. This inevitably means lots of database querying, even if the amount of refreshing can be reduced to a minimum. In my search for ways to reduce the burden this puts on the database, here are some other techniques I&rsquo;ve found that may offer some advantages:</p>
+
+<p>1) Long Polling</p>
+
+<p>With this technique, a request fires and waits for a change before sending a response. Then another request can be fired.</p>
+
+<p>2) Web Sockets</p>
+
+<p>Very different than Ajax polling or long polling, web sockets are used for continuous communication between server and client.</p>
+
+<p>3) Server-Sent Events</p>
+
+<p>Unlike web sockets which allows for continuous back and forth from server to client, this technique establishes a persistent connection that allows the server to send data to the client, but not the other way around.</p>
 ]]></content>
   </entry>
   
