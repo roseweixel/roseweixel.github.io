@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-06-14T22:17:08-04:00</updated>
+  <updated>2015-07-02T09:49:30-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -460,8 +460,8 @@ end
 <p>Here&rsquo;s what I wanted to achieve:</p>
 
 <ul>
-<li>The user fills out the form at &lsquo;songs/new&rsquo; and clicks &lsquo;Submit&rsquo;.</li>
-<li>The newly created song&rsquo;s show page &lsquo;songs/:id/show&rsquo; is rendered with a success message.</li>
+<li>The user fills out the form at <code>songs/new</code> and clicks &lsquo;Submit&rsquo;.</li>
+<li>The newly created song&rsquo;s show page at <code>songs/:id</code> is rendered with a success message.</li>
 <li>The user reloads the page (or navagates away and back), and *poof* the success message is gone.</li>
 </ul>
 
