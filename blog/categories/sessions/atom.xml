@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Sessions | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/sessions/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-07-02T09:52:02-04:00</updated>
+  <updated>2015-07-02T10:02:17-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -143,7 +143,7 @@ end
 =&gt; 103
 </code></pre>
 
-<p>One <code>Hash</code>-like thing you can do with <code>session</code> is put new keys into it, with values that you can assign and change at your whim. And since the session persists from one HTTP request to another, it can pass values around from one action in the controller to another. This sounded like just the right object to hold the success message!</p>
+<p>One hash-like thing you can do with <code>session</code> is put new keys into it, with values that you can assign and change at your whim. And since the session persists from one HTTP request to another, it can pass values around from one action in the controller to another. This sounded like just the right object to hold the success message!</p>
 
 <p>Here&rsquo;s what I did (after enabling sessions, as shown <a href="#first_step">above</a>):</p>
 
