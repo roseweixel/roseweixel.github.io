@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Sinatra | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/sinatra/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-07-05T20:45:10-04:00</updated>
+  <updated>2015-07-05T20:46:04-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -60,7 +60,7 @@ end
 
 <p>Whenever a song is created or updated, the user should see a message like this:</p>
 
-<p><img class="center" src="/images/song_success_message.png" width="700" height="700" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/song_success_message.png 700 700 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>Here&rsquo;s what I wanted to achieve:</p>
 
