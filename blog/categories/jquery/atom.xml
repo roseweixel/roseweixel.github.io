@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Jquery | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/jquery/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-07-05T20:47:06-04:00</updated>
+  <updated>2015-07-05T20:49:09-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -597,7 +597,7 @@ $(document).ready(function() {
 });
 </code></pre>
 
-<p>For the basic example, I&rsquo;m omitting the controller and view as the main focus of this post is how I implemented live notifications. A more detailed explanation of basic Ajax will follow in my next post - a prequel to this one, if you will :).</p>
+<p>For the basic example, I&rsquo;m omitting the controller and view as the main focus of this post is how I implemented live notifications. A more detailed explanation of basic Ajax follows <a href="http://roseweixel.github.io/blog/2015/07/05/integrating-ajax-and-rails-a-simple-todo-list-app/">in my next post</a> - a prequel to this one, if you will :).</p>
 
 <p>With the code above, a single user&rsquo;s action of submitting the form sets off the whole chain of events. But for live notifications, more than one user is involved and the action that changes one user&rsquo;s data is hapenning on another user&rsquo;s client! Making this happen twisted my brain into a pretzel at first, but after several attempts I got the functionality I wanted. A description of these follows below.</p>
 
