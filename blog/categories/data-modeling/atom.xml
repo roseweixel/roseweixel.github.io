@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Data Modeling | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/data-modeling/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-07-05T20:46:04-04:00</updated>
+  <updated>2015-07-05T20:47:06-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -67,15 +67,15 @@ end
 
 <p>2) What happens when a character has more than one actor? One of my favorite characters would most certainly break our has many/belongs to association&mdash;The Doctor.</p>
 
-<p>{% img center /images/sad_doc_rain.jpeg 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img class="center" src="/images/sad_doc_rain.jpeg" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>How can we fit The Doctor into our current schema??? The more I thought about it, the more impossible it seemed. Here is an illustration:</p>
 
-<p>{% img center /images/actor_char_table.png 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img class="center" src="/images/actor_char_table.png" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>The above is our simple model, before The Doctor comes along and breaks everything. Just to be sure I was grasping how NOT to try to include The Doctor and his many actors, here is how it might look:</p>
 
-<p>{% img center /images/the_doctor_broke_the_table.png 800 800 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img class="center" src="/images/the_doctor_broke_the_table.png" width="800" height="800" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>Our actors table seems fine, but our characters table is definitely not okay, and we haven&rsquo;t even included the eight doctors from the first twenty-six seasons yet.</p>
 
@@ -83,7 +83,7 @@ end
 
 <p>In order to make things right, we need a different association: many-to-many. Actors have many characters, and a character has many actors. In order to set our database up for this association, we need a join table. First the visual:</p>
 
-<p>{% img center /images/revised_character_actor_with_join.png 650 650 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img class="center" src="/images/revised_character_actor_with_join.png" width="650" height="650" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>Now for the migration (assuming your actors table is still intact and you&rsquo;ve already removed all but the name column from characters):</p>
 
@@ -121,7 +121,7 @@ end
 
 <p>Now we have the right associations and the right database schema to add all of the Doctors that ever were and ever will be throughout all time.</p>
 
-<p>{% img center /images/first_doctor.jpeg 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img class="center" src="/images/first_doctor.jpeg" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 ]]></content>
   </entry>
   

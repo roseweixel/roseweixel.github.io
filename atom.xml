@@ -4,7 +4,7 @@
   <title><![CDATA[code.life]]></title>
   <link href="http://roseweixel.github.io/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-07-05T20:45:10-04:00</updated>
+  <updated>2015-07-05T20:47:06-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -18,7 +18,7 @@
     <link href="http://roseweixel.github.io/blog/2015/07/05/integrating-ajax-and-rails-a-simple-todo-list-app/"/>
     <updated>2015-07-05T16:59:51-04:00</updated>
     <id>http://roseweixel.github.io/blog/2015/07/05/integrating-ajax-and-rails-a-simple-todo-list-app</id>
-    <content type="html"><![CDATA[<p>This post is based on a tutorial I created to teach students at The Flatiron School the basics of integrating Ajax with Rails. This guide is appropriate for beginners who have already learned the basics of Rails and jQuery.</p>
+    <content type="html"><![CDATA[<p>This post is based on a tutorial I created to teach students at <a href="http://www.flatironschool.com">The Flatiron School</a> the basics of integrating Ajax with Rails. This guide is appropriate for beginners who have already learned the basics of Rails and jQuery.</p>
 
 <p>It will walk you through the process of adding Ajax to a very simple rails app for creating todo lists. First we&rsquo;ll go through the basics of setting up the Rails app, then adding jQuery and Ajax to add items without reloading the page. Finally, we&rsquo;ll refactor with <code>remote: true</code>. Feel free to code along!</p>
 
