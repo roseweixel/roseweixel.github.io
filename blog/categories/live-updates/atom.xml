@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Live Updates | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/live-updates/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-07-02T10:02:17-04:00</updated>
+  <updated>2015-07-05T20:43:16-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -187,7 +187,7 @@ var currentDueDates = "&lt;%= @user.due_date_list %&gt;";
 var dueDatesChanged = currentDueDates !== previousDueDates.toString();
 
 if (countOrStatusChanged || dueDatesChanged) {
-    // UPDATE THE “MASTER TRACKER”
+    // UPDATE THE "MASTER TRACKER"
     $('#all-categories-tracker').html(currentInteractionStates);
 
     // CHECK EACH INDIVIDUAL CATEGORY AND CHANGE ONLY WHAT’S NEEDED

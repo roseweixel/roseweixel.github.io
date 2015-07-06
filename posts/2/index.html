@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>code.life</title>
+  <meta name="author" content="Rose Weixel">
+
+  
+  <meta name="description" content="When learning a programming language as natural as Ruby, the syntax inevitably seeps into our thoughts and alters the way we conceptualize everything &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://roseweixel.github.io/posts/2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="code.life" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet" type="text/css">
+<!--- MathJax Configuration -->
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-55849903-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">code<span id="dot">.</span>life</a></h1>
+  
+    <h2>Rose Weixel&#8217;s technical blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscription">
+  <li><a href="https://github.com/roseweixel" rel="subscribe-github" title="@roseweixel on GitHub">GitHub</a></li>
+</ul>
+  
+  
+  
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:roseweixel.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/07/cheese-dot-slice/">cheese.slice</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-07T22:07:16-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:07 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When learning a programming language as natural as Ruby, the syntax inevitably seeps into our thoughts and alters the way we conceptualize everything from the complex to the mundane. Thus, the title of this blog (and, indeed, this post).</p>
+
+<p>It is easy for this to happen, in part because Ruby has such an extensive library of methods whose names and behaviors make them ideal for modeling real life. One such method is <code>slice</code>.</p>
+
+<p>The method <code>slice</code> can be called on an array (or an object that acts like an array, like a string). It literally returns a &ldquo;slice&rdquo; of the object on which it is called. The original object is left intact.</p>
+
+<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
+&gt; my_slices = cheese.slice(1, 2)
+=&gt; ["muenster", "provolone"] 
+&gt; cheese
+=&gt; ["gouda", "muenster", "provolone", "manchego", "brie"]
+</code></pre>
+
+<p>If you need to take more drastic measures, <code>slice!</code> will modify the original object, removing (and returning) everything you sliced out.</p>
+
+<pre><code>&gt; cheese = ['gouda', 'muenster', 'provolone', 'manchego', 'brie']
+&gt; my_slices = cheese.slice!(1, 2)
+=&gt; ["muenster", "provolone"] 
+&gt; cheese
+=&gt; ["gouda", "manchego", "brie"]
+</code></pre>
+
+<p>Here are three different ways to use <code>slice</code> (<code>slice!</code> can also be invoked in these ways, and both can be used with arrays and strings):</p>
+
+<ul>
+<li><p><code>array.slice(index)</code> returns the object at <code>array[index]</code>, or <code>nil</code> if there is no object there to return.</p></li>
+<li><p><code>array.slice(start, length)</code> returns a new array containing the elements of <code>array</code> starting at <code>start</code> and continuing for <code>length</code> elements (as shown in the code examples above). If there are no objects there, it returns <code>nil</code>.<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p></li>
+<li><p><code>array.slice(range)</code> returns a new array containing the objects at <code>array[range]</code>, or <code>nil</code>.</p></li>
+</ul>
+
+
+<p>  For more on this and other Ruby Array methods, see the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.</p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>There are some special cases that return an empty array. See the <a href="http://www.ruby-doc.org/core-2.1.3/Array.html#method-i-slice">documentation</a>.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/index.html">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Rose Weixel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
