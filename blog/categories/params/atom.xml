@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Params | code.life]]></title>
+  <link href="http://roseweixel.github.io/blog/categories/params/atom.xml" rel="self"/>
+  <link href="http://roseweixel.github.io/"/>
+  <updated>2015-07-08T15:16:03-04:00</updated>
+  <id>http://roseweixel.github.io/</id>
+  <author>
+    <name><![CDATA[Rose Weixel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The Journey of Nested Params Through a Rails App]]></title>
+    <link href="http://roseweixel.github.io/blog/2015/07/08/the-journey-of-nested-params-through-a-rails-app/"/>
+    <updated>2015-07-08T14:54:28-04:00</updated>
+    <id>http://roseweixel.github.io/blog/2015/07/08/the-journey-of-nested-params-through-a-rails-app</id>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/params-journey-1.png" width="800" height="800" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p><img class="center" src="/images/params-journey-2.png" width="800" height="800" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p><img class="center" src="/images/params-journey-3.png" width="800" height="800" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+]]></content>
+  </entry>
+  
+</feed>
