@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Live Updates | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/live-updates/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-08-02T21:32:26-04:00</updated>
+  <updated>2015-08-02T21:44:13-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -26,7 +26,7 @@
 
 <p>In a basic Ajax request, a user clicks on something, the Ajax request gets sent, and a part of the DOM gets updated without the entire page reloading.</p>
 
-<p><img class="center" src="/images/basic_ajax_request.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/basic_ajax_request.png 600 600 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>The code usually looks something like this:</p>
 
@@ -63,7 +63,7 @@ $(document).ready(function() {
 
 <p>1) Separate the &ldquo;live notifications&rdquo; div into a partial:</p>
 
-<p><img class="center" src="/images/live_notifications_div.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/live_notifications_div.png 600 600 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>2) Create a route and a controller action:</p>
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
 </ul>
 
 
-<p><img class="center" src="/images/form-refreshing-problems.gif" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/form-refreshing-problems.gif 600 600 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <h2>A Quick Fix for Form Problems</h2>
 
@@ -170,7 +170,7 @@ With `current_user.id` stored in an object attached to the window, making sure t
 
 <p>For this part, I needed to capture the state of all of a user&rsquo;s transactions and friendships (the two things for which there may be a notification), and hide this information on the page. I created a method in the <code>User</code> model that returns all of these states in an array, and put this into a hidden element on the page:</p>
 
-<p><img class="center" src="/images/hidden-tracker.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/hidden-tracker.png 600 600 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>Since the transactions could also have due dates, I did something similar for those.</p>
 
@@ -217,7 +217,7 @@ if (countOrStatusChanged || dueDatesChanged) {
 
 <p>With this final refactoring, checks are in place that stop the unnecessary refreshing that came with the first version:</p>
 
-<p><img class="center" src="/images/live-notifications-flow.png" width="600" height="600" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/live-notifications-flow.png 600 600 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <h2>Alternatives</h2>
 

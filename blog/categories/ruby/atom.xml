@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-08-02T21:32:26-04:00</updated>
+  <updated>2015-08-02T21:44:13-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -250,7 +250,7 @@ ArgumentError: wrong number of arguments (0 for 1)
 
 <p>JavaScript does not care about arity! Here&rsquo;s photographic proof (this is a lot easier to see in the browser&rsquo;s JavaScript console):</p>
 
-<p><img class="center" src="/images/js-no-arity-checking.png" width="700" height="700" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/js-no-arity-checking.png 700 700 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>To review what just happened:</p>
 
@@ -286,7 +286,7 @@ NoMethodError: undefined method `bark' for #&lt;Dog:0x007f9fd5757c78 @name="Fido
 
 <p>JavaScript doesn&rsquo;t care about defining all of an object&rsquo;s attributes and behaviors up front, and pretty much lets you do whatever you want, whenever you want. Here&rsquo;s a continuation of the console session above:</p>
 
-<p><img class="center" src="/images/js-fido-barks.png" width="700" height="700" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/js-fido-barks.png 700 700 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <ul>
 <li>I asked <code>fido</code> to bark, having never defined a <code>bark</code> function or attribute. JavaScript quietly returned <code>undefined</code>.</li>
@@ -297,7 +297,7 @@ NoMethodError: undefined method `bark' for #&lt;Dog:0x007f9fd5757c78 @name="Fido
 
 <p>So, can all <code>Dog</code>s bark now?</p>
 
-<p><img class="center" src="/images/js-spot-cant-bark.png" width="700" height="700" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/js-spot-cant-bark.png 700 700 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>No, they cannot. Now the definition of <code>Dog</code> is a bit of a mess - <code>fido</code> is a <code>Dog</code> that can bark, while <code>spot</code> can&rsquo;t. The very nature of <code>Dog</code>-ness has been brought into question, and JavaScript is fine with all of this. No errors, no complaining. For better or for worse.</p>
 
@@ -404,7 +404,7 @@ global code@javascript.js:24:16
 
 <p>This was a long post, and it probably could get longer. But I think this is enough to chew on for now. The bottom line is that JavaScript has some crazy ways, but these ways are not unlearnable, and the reward for learning them is a much saner coding experience. If you understand the quirks, remember your <code>var</code>s, and always <code>use strict</code>, you and JavaScript can be unstoppable, just like the honey badger.</p>
 
-<p><img class="center" src="/images/nothing-stops-honey-badger.png" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/nothing-stops-honey-badger.png 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 ]]></content>
   </entry>
   
@@ -455,7 +455,7 @@ end
 
 <p>Whenever a song is created or updated, the user should see a message like this:</p>
 
-<p><img class="center" src="/images/song_success_message.png" width="700" height="700" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/song_success_message.png 700 700 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>Here&rsquo;s what I wanted to achieve:</p>
 
@@ -641,15 +641,15 @@ end
 
 <p>2) What happens when a character has more than one actor? One of my favorite characters would most certainly break our has many/belongs to association&mdash;The Doctor.</p>
 
-<p><img class="center" src="/images/sad_doc_rain.jpeg" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/sad_doc_rain.jpeg 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>How can we fit The Doctor into our current schema??? The more I thought about it, the more impossible it seemed. Here is an illustration:</p>
 
-<p><img class="center" src="/images/actor_char_table.png" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/actor_char_table.png 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>The above is our simple model, before The Doctor comes along and breaks everything. Just to be sure I was grasping how NOT to try to include The Doctor and his many actors, here is how it might look:</p>
 
-<p><img class="center" src="/images/the_doctor_broke_the_table.png" width="800" height="800" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/the_doctor_broke_the_table.png 800 800 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>Our actors table seems fine, but our characters table is definitely not okay, and we haven&rsquo;t even included the eight doctors from the first twenty-six seasons yet.</p>
 
@@ -657,7 +657,7 @@ end
 
 <p>In order to make things right, we need a different association: many-to-many. Actors have many characters, and a character has many actors. In order to set our database up for this association, we need a join table. First the visual:</p>
 
-<p><img class="center" src="/images/revised_character_actor_with_join.png" width="650" height="650" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/revised_character_actor_with_join.png 650 650 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>Now for the migration (assuming your actors table is still intact and you&rsquo;ve already removed all but the name column from characters):</p>
 
@@ -695,7 +695,7 @@ end
 
 <p>Now we have the right associations and the right database schema to add all of the Doctors that ever were and ever will be throughout all time.</p>
 
-<p><img class="center" src="/images/first_doctor.jpeg" width="500" height="500" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img center /images/first_doctor.jpeg 500 500 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 ]]></content>
   </entry>
   
