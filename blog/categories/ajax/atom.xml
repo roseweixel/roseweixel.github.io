@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ajax | code.life]]></title>
   <link href="http://roseweixel.github.io/blog/categories/ajax/atom.xml" rel="self"/>
   <link href="http://roseweixel.github.io/"/>
-  <updated>2015-08-02T21:28:02-04:00</updated>
+  <updated>2015-08-02T21:32:26-04:00</updated>
   <id>http://roseweixel.github.io/</id>
   <author>
     <name><![CDATA[Rose Weixel]]></name>
@@ -564,7 +564,9 @@ end
     <link href="http://roseweixel.github.io/blog/2015/06/04/live-updating-dom-elements-with-jquery-and-ajax/"/>
     <updated>2015-06-04T21:20:11-04:00</updated>
     <id>http://roseweixel.github.io/blog/2015/06/04/live-updating-dom-elements-with-jquery-and-ajax</id>
-    <content type="html"><![CDATA[<p>Any web app that involves real-time interactions between users requires some form of live notifications. Implementing this, for a beginner developer such as myself, can be a daunting challenge. This post will walk through how I went about solving this problem when working on <a href="http://www.lacquerlove.com">Lacquer Love&amp;Lend</a>, a social network for nail polish lovers that allows users to interact via friendships and lacquer loans. As with any social network, I wanted users to see live notifications whenever they received a new friendship or transaction request, or when the <code>state</code> of any of their friendships or transactions changed. The example that follows assumes some basic knowledge of Rails.</p>
+    <content type="html"><![CDATA[<p><em><strong>Based on a <a href="/presentations">talk I gave</a> at the <a href="http://www.meetup.com/nychtml5/events/222437348/">NYCHTML5 Meetup</a> on June 2nd, 2015.</strong></em></p>
+
+<p>Any web app that involves real-time interactions between users requires some form of live notifications. Implementing this, for a beginner developer such as myself, can be a daunting challenge. This post will walk through how I went about solving this problem when working on <a href="http://www.lacquerlove.com">Lacquer Love&amp;Lend</a>, a social network for nail polish lovers that allows users to interact via friendships and lacquer loans. As with any social network, I wanted users to see live notifications whenever they received a new friendship or transaction request, or when the <code>state</code> of any of their friendships or transactions changed. The example that follows assumes some basic knowledge of Rails.</p>
 
 <h2>Some Basic Ajax</h2>
 
